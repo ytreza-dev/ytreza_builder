@@ -1,15 +1,16 @@
-from abc import ABC
-from typing import Self
+from abc import ABC, abstractmethod
+from typing import Self, Any
 
 
 class SystemFilePort(ABC):
+    @abstractmethod
     def create_directory(self, path: str) -> None:
         pass
 
 
 class PythonProjectBuilder:
     def __init__(self, system_file: SystemFilePort):
-        self._configuration = {}
+        self._configuration: dict[str, Any] = {}
         self._system_file = system_file
 
     def build(self) -> None:
