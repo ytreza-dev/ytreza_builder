@@ -1,7 +1,7 @@
 import pytest
 
 from conftest import SystemFileForTest, History, system_file, python_project
-from python_project_builder import PythonProjectBuilder
+from src.python_project_builder import PythonProjectBuilder
 
 
 def test_when_do_nothing(system_file: SystemFileForTest):
