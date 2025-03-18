@@ -7,6 +7,10 @@ class SystemFilePort(ABC):
     def create_directory(self, path: str) -> None:
         pass
 
+    @abstractmethod
+    def execute(self, command_line: str, working_directory: str) -> None:
+        pass
+
 
 class PythonProjectBuilder:
     def __init__(self, system_file: SystemFilePort, configuration: dict[str, Any]):
@@ -15,6 +19,7 @@ class PythonProjectBuilder:
 
     def build(self) -> None:
         self._system_file.create_directory(self._full_project_folder())
+        self._system_file.execute(command_line="python -m pip install --user pipenv", working_directory=self._full_project_folder())
 
     def _full_project_folder(self):
         project_name = self._configuration["project_name"]

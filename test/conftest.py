@@ -1,5 +1,4 @@
 from dataclasses import dataclass, field
-from typing import Any
 
 import pytest
 
@@ -24,6 +23,10 @@ class SystemFileForTest(SystemFilePort):
 
     def create_directory(self, path: str):
         self._history.append(History(action="create_directory", param={"path": path}))
+
+    def execute(self, command_line: str, working_directory: str) -> None:
+        self._history.append(
+            History(action="execute", param={"command_line": command_line, "working_directory": working_directory}))
 
 
 @pytest.fixture

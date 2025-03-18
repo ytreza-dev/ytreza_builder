@@ -1,5 +1,3 @@
-from tempfile import TemporaryDirectory
-
 import pytest
 
 from conftest import SystemFileForTest, History, system_file, python_project
@@ -24,12 +22,16 @@ def test_create_project_directory(project_folder: str, project_name: str, expect
     assert expected in system_file.history()
 
 
-def test_create_project_with_pipenv(python_project: PythonProject):
-    with (TemporaryDirectory() as temp_dir):
-        (python_project
-            .with_pipenv()
-            .having_configuration(project_name="test", project_folder=temp_dir)
-            .build())
+def test_create_project_with_pipenv(python_project: PythonProject, system_file: SystemFileForTest):
+    (python_project
+         .with_pipenv()
+         .having_configuration(project_name="test", project_folder="some directory")
+         .build())
 
 
+    assert History(action="execute",
+                   param={
+                       "command_line": "python -m pip install --user pipenv",
+                       "working_directory": "some directory/test"
+                   }) in system_file.history()
 
