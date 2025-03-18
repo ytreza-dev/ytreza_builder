@@ -3,24 +3,27 @@ from typing import Any
 
 import pytest
 
-from src.python_project_builder import SystemFilePort, PythonProjectBuilder
+from src.python_project_builder import SystemFilePort, PythonProject
+
+
+@dataclass(frozen=True)
+class History:
+    action: str
+    param: dict = field(default_factory=dict)
+
+    def __eq__(self, other):
+        return self.action == other.action and self.param == other.param
 
 
 class SystemFileForTest(SystemFilePort):
     def __init__(self):
         self._history = []
 
-    def history(self) -> list[Any]:
+    def history(self) -> list[History]:
         return self._history
 
     def create_directory(self, path: str):
         self._history.append(History(action="create_directory", param={"path": path}))
-
-
-@dataclass
-class History:
-    action: str
-    param: dict = field(default_factory=dict)
 
 
 @pytest.fixture
@@ -29,5 +32,5 @@ def system_file() -> SystemFileForTest:
 
 
 @pytest.fixture
-def python_project(system_file: SystemFileForTest) -> PythonProjectBuilder:
-    return PythonProjectBuilder(system_file=system_file)
+def python_project(system_file: SystemFileForTest) -> PythonProject:
+    return PythonProject(system_file=system_file)

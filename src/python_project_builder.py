@@ -9,8 +9,8 @@ class SystemFilePort(ABC):
 
 
 class PythonProjectBuilder:
-    def __init__(self, system_file: SystemFilePort):
-        self._configuration: dict[str, Any] = {}
+    def __init__(self, system_file: SystemFilePort, configuration: dict[str, Any]):
+        self._configuration: dict[str, Any] = configuration
         self._system_file = system_file
 
     def build(self) -> None:
@@ -22,6 +22,19 @@ class PythonProjectBuilder:
         full_project_folder = f"{project_folder}/{project_name}"
         return full_project_folder
 
-    def having_configuration(self, **kwargs) -> Self:
-        self._configuration = kwargs
-        return self
+
+class PythonProjectConfiguration:
+    def __init__(self, system_file: SystemFilePort):
+        self._system_file = system_file
+
+    def having_configuration(self, **kwargs) -> PythonProjectBuilder:
+        return PythonProjectBuilder(self._system_file, configuration=kwargs)
+
+
+class PythonProject:
+    def __init__(self, system_file: SystemFilePort):
+        self._configuration: dict[str, Any] = {}
+        self._system_file = system_file
+
+    def with_pipenv(self) -> PythonProjectConfiguration:
+        return PythonProjectConfiguration(self._system_file)

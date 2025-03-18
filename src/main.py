@@ -1,9 +1,9 @@
-from src.python_project_builder import PythonProjectBuilder
+from src.python_project_builder import PythonProject
 from src.system_file_os import SystemFileOs
 
 
 def main():
-    python_project = PythonProjectBuilder(SystemFileOs())
+    python_project = PythonProject(SystemFileOs())
     python_project.having_configuration(project_name="test", project_folder="c:/temp").build()
 
 
