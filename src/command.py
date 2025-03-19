@@ -12,4 +12,4 @@ class ExecuteShell:
     command_line: str
 
 
-Command = Union[CreateDirectory, ExecuteShell]
+Command = CreateDirectory | ExecuteShell
