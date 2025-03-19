@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 
 import pytest
 
-from src.python_project_builder import SystemFilePort, PythonProject
+from src.python_project_builder import SystemFilePort, PythonProject, Command, CommandHandlerPort
 
 
 @dataclass(frozen=True)
@@ -29,6 +29,18 @@ class SystemFileForTest(SystemFilePort):
             History(action="execute", param={"command_line": command_line, "working_directory": working_directory}))
 
 
+class CommandHandlerForTest(CommandHandlerPort):
+    def __init__(self) -> None:
+        self._history: list[Command] = []
+
+    def history(self) -> list[Command]:
+        return self._history
+
+    def execute_all(self, commands: list[Command]):
+        self._history.extend(commands)
+
+
+
 @pytest.fixture
 def system_file() -> SystemFileForTest:
     return SystemFileForTest()
@@ -37,3 +49,8 @@ def system_file() -> SystemFileForTest:
 @pytest.fixture
 def python_project(system_file: SystemFileForTest) -> PythonProject:
     return PythonProject(system_file=system_file)
+
+
+@pytest.fixture()
+def command_handler() -> CommandHandlerForTest:
+    return CommandHandlerForTest()
