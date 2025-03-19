@@ -1,4 +1,5 @@
-from src.python_project_builder import CommandHandlerPort, Command
+from src.python_project_builder import CommandHandlerPort
+from src.command import Command
 
 
 class CommandHandler(CommandHandlerPort):

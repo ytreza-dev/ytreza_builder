@@ -2,7 +2,8 @@ from dataclasses import dataclass, field
 
 import pytest
 
-from src.python_project_builder import SystemFilePort, PythonProject, Command, CommandHandlerPort
+from src.python_project_builder import SystemFilePort, PythonProject, CommandHandlerPort
+from src.command import Command
 
 
 @dataclass(frozen=True)

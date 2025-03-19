@@ -1,21 +1,7 @@
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
 from typing import Any
 
-
-@dataclass(frozen=True)
-class Command:
-    pass
-
-
-@dataclass(frozen=True)
-class CreateDirectory(Command):
-    path: str
-
-
-@dataclass(frozen=True)
-class ExecuteShell(Command):
-    command_line: str
+from src.command import CreateDirectory, ExecuteShell, Command
 
 
 class SystemFilePort(ABC):
