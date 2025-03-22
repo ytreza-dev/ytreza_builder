@@ -10,6 +10,7 @@ class CreateDirectory:
 @dataclass(frozen=True)
 class ExecuteShell:
     command_line: str
+    working_directory: str
 
 
 Command = CreateDirectory | ExecuteShell

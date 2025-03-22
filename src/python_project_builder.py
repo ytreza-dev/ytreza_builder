@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Any
+from typing import Any, Self
 
 from src.command import CreateDirectory, ExecuteShell, Command
 
@@ -20,7 +20,7 @@ class CommandHandlerPort(ABC):
         pass
 
 
-class PythonProjectBuilder:
+class PythonPackageManagerChoice:
     def __init__(self, system_file: SystemFilePort, commands: list[Command], configuration: dict[str, Any]):
         self._configuration: dict[str, Any] = configuration
         self._system_file = system_file
@@ -40,14 +40,19 @@ class PythonProjectBuilder:
         self._commands.append(CreateDirectory(path=self._full_project_folder()))
         command_handler.execute_all(self._commands)
 
+    def with_pipenv(self) -> Self:
+        self._commands.append(ExecuteShell(command_line="python -m pip install --user pipenv", working_directory="."))
+        return self
+
+
 
 class PythonProjectConfiguration:
     def __init__(self, system_file: SystemFilePort, commands: list[Command]):
         self._system_file = system_file
         self._commands = commands
 
-    def having_configuration(self, **kwargs) -> PythonProjectBuilder:
-        return PythonProjectBuilder(system_file=self._system_file, commands=self._commands, configuration=kwargs)
+    def having_configuration(self, **kwargs) -> PythonPackageManagerChoice:
+        return PythonPackageManagerChoice(system_file=self._system_file, commands=self._commands, configuration=kwargs)
 
 
 
@@ -58,9 +63,15 @@ class PythonProject:
         self._configuration: dict[str, Any] = {}
         self._system_file = system_file
 
-    def with_pipenv(self) -> PythonProjectConfiguration:
-        self._commands.append(ExecuteShell(command_line="python -m pip install --user pipenv"))
-        return PythonProjectConfiguration(self._system_file, self._commands)
+    def having_configuration(self, **kwargs) -> PythonPackageManagerChoice:
+        return PythonPackageManagerChoice(system_file=self._system_file, commands=self._commands, configuration=kwargs)
 
     def execute(self, command_handler):
         pass
+
+    def _full_project_folder(self):
+        project_name = self._configuration["project_name"]
+        project_folder = self._configuration["project_folder"]
+        full_project_folder = f"{project_folder}/{project_name}"
+        return full_project_folder
+

@@ -1,5 +1,6 @@
 import tempfile
 from pathlib import Path
+from unittest.mock import patch
 
 from src import command
 from src.command import CreateDirectory
@@ -14,3 +15,8 @@ def test_create_directory():
         path = Path(temp_dir) / "toto"
         assert path.is_dir()
 
+def test_execute():
+    with patch("subprocess.run") as mock:
+        handler = CommandHandler()
+        handler.execute_all(commands=[command.ExecuteShell(command_line="echo 'hello'", working_directory="directory")])
+        mock.assert_called_once_with(["echo", "'hello'"], cwd="directory")
