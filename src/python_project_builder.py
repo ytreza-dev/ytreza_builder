@@ -3,7 +3,7 @@ from typing import Any, Self
 
 from src.command import CreateDirectory, ExecuteShell, Command
 from src.command_handler_port import CommandHandlerPort
-from src.package_manager.pipenv import PipenvBuiltIn
+from src.package_manager.poetry import PoetryBuiltIn
 
 
 class SystemFilePort(ABC):
@@ -16,15 +16,15 @@ class SystemFilePort(ABC):
         pass
 
 
-class PythonPackageManagerChoice(PipenvBuiltIn):
+class PythonPackageManagerChoice(PoetryBuiltIn):
     def __init__(self, system_file: SystemFilePort, commands: list[Command], configuration: dict[str, Any]):
+        super().__init__(commands)
         self._configuration: dict[str, Any] = configuration
         self._system_file = system_file
-        self._commands = commands
 
     def build(self) -> None:
         self._system_file.create_directory(self._full_project_folder())
-        self._system_file.execute(command_line="python -m pip install --user pipenv", working_directory=self._full_project_folder())
+        self._system_file.execute(command_line="python -m pip install --user poetry", working_directory=self._full_project_folder())
 
     def _full_project_folder(self):
         project_name = self._configuration["project_name"]
@@ -37,7 +37,6 @@ class PythonPackageManagerChoice(PipenvBuiltIn):
         command_handler.execute_all(self._commands)
 
 
-
 class PythonProjectConfiguration:
     def __init__(self, system_file: SystemFilePort, commands: list[Command]):
         self._system_file = system_file
@@ -45,8 +44,6 @@ class PythonProjectConfiguration:
 
     def having_configuration(self, **kwargs) -> PythonPackageManagerChoice:
         return PythonPackageManagerChoice(system_file=self._system_file, commands=self._commands, configuration=kwargs)
-
-
 
 
 class PythonProject:
@@ -66,4 +63,3 @@ class PythonProject:
         project_folder = self._configuration["project_folder"]
         full_project_folder = f"{project_folder}/{project_name}"
         return full_project_folder
-
