@@ -2,6 +2,8 @@ from abc import ABC, abstractmethod
 from typing import Any, Self
 
 from src.command import CreateDirectory, ExecuteShell, Command
+from src.command_handler_port import CommandHandlerPort
+from src.package_manager.pipenv import PipenvBuiltIn
 
 
 class SystemFilePort(ABC):
@@ -14,13 +16,7 @@ class SystemFilePort(ABC):
         pass
 
 
-class CommandHandlerPort(ABC):
-    @abstractmethod
-    def execute_all(self, commands: list[Command]):
-        pass
-
-
-class PythonPackageManagerChoice:
+class PythonPackageManagerChoice(PipenvBuiltIn):
     def __init__(self, system_file: SystemFilePort, commands: list[Command], configuration: dict[str, Any]):
         self._configuration: dict[str, Any] = configuration
         self._system_file = system_file
@@ -39,10 +35,6 @@ class PythonPackageManagerChoice:
     def execute(self, command_handler: CommandHandlerPort):
         self._commands.append(CreateDirectory(path=self._full_project_folder()))
         command_handler.execute_all(self._commands)
-
-    def with_pipenv(self) -> Self:
-        self._commands.append(ExecuteShell(command_line="python -m pip install --user pipenv", working_directory="."))
-        return self
 
 
 

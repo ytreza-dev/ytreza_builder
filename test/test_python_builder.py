@@ -25,13 +25,3 @@ def test_create_project_directory(project_folder: str, project_name: str, expect
      .execute(command_handler))
 
     assert expected in command_handler.history()
-
-
-def test_create_project_with_pipenv(python_project: PythonProject, command_handler: CommandHandlerForTest):
-    (python_project
-     .having_configuration(project_name="test", project_folder="some directory")
-     .with_pipenv()
-     .execute(command_handler))
-
-    assert ExecuteShell(command_line="python -m pip install --user pipenv",
-                        working_directory=".") in command_handler.history()

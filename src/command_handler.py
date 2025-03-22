@@ -2,7 +2,7 @@ import subprocess
 from pathlib import Path
 from typing import assert_never
 
-from src.python_project_builder import CommandHandlerPort
+from src.command_handler_port import CommandHandlerPort
 from src.command import Command, CreateDirectory, ExecuteShell
 
 
