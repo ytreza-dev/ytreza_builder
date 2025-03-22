@@ -4,6 +4,7 @@ from typing import Any, Self
 from src.command import CreateDirectory, ExecuteShell, Command
 from src.command_handler_port import CommandHandlerPort
 from src.package_manager.poetry import PoetryBuiltIn
+from src.package_manager.pipenv import PipenvBuiltIn
 
 
 class SystemFilePort(ABC):
@@ -16,9 +17,10 @@ class SystemFilePort(ABC):
         pass
 
 
-class PythonPackageManagerChoice(PoetryBuiltIn):
+class PythonPackageManagerChoice(PoetryBuiltIn, PipenvBuiltIn):
     def __init__(self, system_file: SystemFilePort, commands: list[Command], configuration: dict[str, Any]):
-        super().__init__(commands)
+        PoetryBuiltIn.__init__(self, commands)
+        PipenvBuiltIn.__init__(self, commands)
         self._configuration: dict[str, Any] = configuration
         self._system_file = system_file
 
