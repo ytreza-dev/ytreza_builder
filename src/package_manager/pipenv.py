@@ -11,6 +11,3 @@ class PipenvBuiltIn:
     def with_pipenv(self) -> Self:
         self._commands.append(ExecuteShell(command_line="python -m pip install --user pipenv", working_directory="."))
         return self
-
-    def execute(self, command_handler: CommandHandlerPort) -> None:
-        command_handler.execute_all(self._commands, {})

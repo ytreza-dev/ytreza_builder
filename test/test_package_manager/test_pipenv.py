@@ -1,10 +1,11 @@
 from conftest import CommandHandlerForTest
 from src.command import ExecuteShell
 from src.package_manager.pipenv import PipenvBuiltIn
+from src.python_project_builder import PythonPackageManagerChoice
 
 
 def test_create_project_with_pipenv(command_handler: CommandHandlerForTest):
-    project = PipenvBuiltIn(commands=[])
+    project = PythonPackageManagerChoice(commands=[], configuration={})
     (project
      .with_pipenv()
      .execute(command_handler))

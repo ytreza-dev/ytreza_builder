@@ -1,10 +1,11 @@
 from conftest import CommandHandlerForTest
 from src.command import ExecuteShell
 from src.package_manager.poetry import PoetryBuiltIn
+from src.python_project_builder import PythonPackageManagerChoice
 
 
 def test_create_project_with_poetry(command_handler: CommandHandlerForTest):
-    project = PoetryBuiltIn(commands=[])
+    project = PythonPackageManagerChoice(commands=[], configuration={})
     (project
      .with_poetry()
      .execute(command_handler))

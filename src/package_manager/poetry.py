@@ -11,6 +11,3 @@ class PoetryBuiltIn:
     def with_poetry(self) -> Self:
         self._commands.append(ExecuteShell(command_line="python -m pip install --user poetry", working_directory="."))
         return self
-
-    def execute(self, command_handler: CommandHandlerPort) -> None:
-        command_handler.execute_all(self._commands, {})
