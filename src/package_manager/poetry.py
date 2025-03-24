@@ -1,6 +1,7 @@
 from typing import Self
 
 import src.command as cmd
+import src.python_package_manager as package_manager
 from src.action_plan import ActionPlan
 
 
@@ -11,6 +12,6 @@ class PoetryBuiltIn:
     def with_poetry(self) -> Self:
         self._action_plan = self._action_plan.prepare(
             cmd.ExecuteShell(command_line="python -m pip install --user poetry", working_directory="."),
-            cmd.UsePackageManager("poetry")
+            cmd.UsePackageManager(package_manager.Poetry)
         )
         return self

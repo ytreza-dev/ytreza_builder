@@ -2,10 +2,14 @@ import tempfile
 from pathlib import Path
 from unittest.mock import patch
 
+import pytest
+
 from src import command
 from src.action_plan import ActionPlan
 from src.command import ProjectPath
 from src.command_handler import CommandHandler
+from src.python_package_manager import Poetry
+import src.python_package_manager as pm
 
 
 def test_create_directory():
@@ -24,11 +28,17 @@ def test_execute_shell():
             commands=(command.ExecuteShell(command_line="echo 'hello'", working_directory="directory"),)))
         mock.assert_called_once_with(["echo", "'hello'"], cwd="directory")
 
-def test_install_python_package():
+@pytest.mark.parametrize("package_manager, expected", [
+    [pm.Poetry(), "poetry add pytest"],
+    [pm.Pipenv(), "pipenv install pytest"],
+])
+def test_install_python_package(package_manager, expected: str):
     with patch("subprocess.run") as mock:
         handler = CommandHandler()
         handler.execute_all(configuration={}, action_plan=ActionPlan(
-            commands=(command.InstallPackage(package_name="pytest"),)))
+            commands=(
+                command.UsePackageManager(package_manager),
+                command.InstallPackage(package_name="pytest"),)))
 
-        mock.assert_called_once_with(["poetry", "add", "pytest"], cwd=None)
+        mock.assert_called_once_with(expected.split(" "), cwd=None)
 

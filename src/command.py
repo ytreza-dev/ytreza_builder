@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 
+from src.python_package_manager import PythonPackageManager
+
 
 @dataclass(frozen=True)
 class ProjectPath:
@@ -26,9 +28,11 @@ class ExecuteShell:
 class InstallPackage:
     package_name: str
 
+PackageManager = PythonPackageManager
 
 @dataclass()
 class UsePackageManager:
-    name: str
+    package_manager: PackageManager
 
-Command = DummyCommand | CreateDirectory | ExecuteShell | InstallPackage
+
+Command = DummyCommand | CreateDirectory | ExecuteShell | InstallPackage | UsePackageManager
