@@ -21,7 +21,7 @@ class CreateDirectory:
 @dataclass(frozen=True)
 class ExecuteShell:
     command_line: str
-    working_directory: str
+    working_directory: ProjectPath
 
 
 @dataclass(frozen=True)
@@ -35,9 +35,4 @@ class UsePackageManager:
     package_manager: PackageManager
 
 
-@dataclass(frozen=True)
-class CreateProject:
-    pass
-
-
-Command = DummyCommand | CreateDirectory | ExecuteShell | InstallPackage | UsePackageManager | CreateProject
+Command = DummyCommand | CreateDirectory | ExecuteShell | InstallPackage | UsePackageManager

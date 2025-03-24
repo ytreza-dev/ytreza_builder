@@ -23,9 +23,9 @@ def test_create_directory():
 def test_execute_shell():
     with patch("subprocess.run") as mock:
         handler = CommandHandler()
-        handler.execute_all(configuration={}, action_plan=ActionPlan(
-            commands=(cmd.ExecuteShell(command_line="echo 'hello'", working_directory="directory"),)))
-        mock.assert_called_once_with(["echo", "'hello'"], cwd="directory")
+        handler.execute_all(configuration={"project_name": "project", "project_folder": "directory"}, action_plan=ActionPlan(
+            commands=(cmd.ExecuteShell(command_line="echo 'hello'", working_directory=cmd.ProjectPath()),)))
+        mock.assert_called_once_with(["echo", "'hello'"], cwd="directory/project")
 
 @pytest.mark.parametrize("package_manager, expected", [
     [pm.Poetry(), "poetry add pytest"],

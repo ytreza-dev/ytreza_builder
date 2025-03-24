@@ -10,7 +10,7 @@ class TestProjectWithPipenv(BaseTestPackageManagerChoice):
 
     def expected_command(self):
         return [
-            cmd.ExecuteShell(command_line="python -m pip install --user pipenv", working_directory="."),
-            cmd.UsePackageManager(package_manager.Pipenv()),
             cmd.CreateDirectory(cmd.ProjectPath()),
+            cmd.ExecuteShell(command_line="python -m pip install --user pipenv", working_directory=cmd.ProjectPath()),
+            cmd.UsePackageManager(package_manager.Pipenv()),
         ]

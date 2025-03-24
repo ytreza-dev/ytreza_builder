@@ -11,9 +11,9 @@ class PoetryBuiltIn:
 
     def with_poetry(self) -> Self:
         self._action_plan = self._action_plan.prepare(
-            cmd.ExecuteShell(command_line="python -m pip install --user poetry", working_directory="."),
-            cmd.UsePackageManager(package_manager.Poetry()),
             cmd.CreateDirectory(path=cmd.ProjectPath()),
-            cmd.ExecuteShell(command_line="poetry init", working_directory="."),
+            cmd.ExecuteShell(command_line="python -m pip install --user poetry", working_directory=cmd.ProjectPath()),
+            cmd.UsePackageManager(package_manager.Poetry()),
+            cmd.ExecuteShell(command_line="poetry init", working_directory=cmd.ProjectPath()),
         )
         return self

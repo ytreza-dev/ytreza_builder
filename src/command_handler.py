@@ -44,8 +44,8 @@ class CommandHandler(CommandHandlerPort):
             case cmd.CreateDirectory():
                 self._create_directory(command, configuration)
 
-            case cmd.ExecuteShell(command_line=command_line, working_directory=working_directory):
-                self._execute_shell(command_line=command_line, working_directory=working_directory)
+            case cmd.ExecuteShell():
+                self._execute_shell(command, configuration)
 
             case cmd.DummyCommand(value=value):
                 raise NotImplementedError(f"DummyCommand {value} is not implemented")
@@ -75,9 +75,8 @@ class CommandHandler(CommandHandlerPort):
         full_project_folder = f"{project_folder}/{project_name}"
         return full_project_folder
 
-    @staticmethod
-    def _execute_shell(command_line: str, working_directory: str):
-        subprocess.run(command_line.split(" "), cwd=working_directory)
+    def _execute_shell(self, command: cmd.ExecuteShell, configuration: dict[str, Any]):
+        subprocess.run(command.command_line.split(" "), cwd=self._full_project_folder(configuration))
 
     @staticmethod
     def _install_package(package_name: str):
