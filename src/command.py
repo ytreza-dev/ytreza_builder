@@ -27,5 +27,8 @@ class InstallPackage:
     package_name: str
 
 
-Command = DummyCommand | CreateDirectory | ExecuteShell | InstallPackage
+@dataclass()
+class UsePackageManager:
+    name: str
 
+Command = DummyCommand | CreateDirectory | ExecuteShell | InstallPackage

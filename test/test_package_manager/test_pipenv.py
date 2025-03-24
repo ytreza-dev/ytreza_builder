@@ -1,4 +1,4 @@
-from src.command import ExecuteShell
+import src.command as cmd
 from src.python_project_builder import PythonPackageManagerChoice
 from test.test_package_manager.base_test_package_manager_choice import BaseTestPackageManagerChoice
 
@@ -8,5 +8,7 @@ class TestProjectWithPipenv(BaseTestPackageManagerChoice):
         return step.with_pipenv()
 
     def expected_command(self):
-        return [ExecuteShell(command_line="python -m pip install --user pipenv",
-                            working_directory=".")]
+        return [
+            cmd.ExecuteShell(command_line="python -m pip install --user pipenv", working_directory="."),
+            cmd.UsePackageManager(name="pipenv")
+        ]

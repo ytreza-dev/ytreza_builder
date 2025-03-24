@@ -1,7 +1,7 @@
 from typing import Self
 
+import src.command as cmd
 from src.action_plan import ActionPlan
-from src.command import ExecuteShell
 
 
 class PipenvBuiltIn:
@@ -10,5 +10,7 @@ class PipenvBuiltIn:
 
     def with_pipenv(self) -> Self:
         self._action_plan = self._action_plan.prepare(
-            ExecuteShell(command_line="python -m pip install --user pipenv", working_directory="."))
+            cmd.ExecuteShell(command_line="python -m pip install --user pipenv", working_directory="."),
+            cmd.UsePackageManager("pipenv")
+        )
         return self
