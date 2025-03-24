@@ -8,5 +8,5 @@ class TestProjectWithPoetry(BaseTestPackageManagerChoice):
         return step.with_poetry()
 
     def expected_command(self):
-        return ExecuteShell(command_line="python -m pip install --user poetry",
-                            working_directory=".")
+        return [ExecuteShell(command_line="python -m pip install --user poetry",
+                            working_directory=".")]

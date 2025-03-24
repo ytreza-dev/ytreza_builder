@@ -12,4 +12,4 @@ class TestTestManagerChoice(BaseTestAnyStep):
         return step.with_pytest()
 
     def expected_command(self):
-        return command.InstallPackage(package_name="pytest")
+        return [command.InstallPackage(package_name="pytest")]
