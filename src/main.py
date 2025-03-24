@@ -4,7 +4,7 @@ from src.system_file_os import SystemFileOs
 
 
 def main():
-    python_project = PythonProject(SystemFileOs())
+    python_project = PythonProject()
     command_handler = CommandHandler()
     (python_project
      .having_configuration(project_name="test", project_folder="c:/temp")

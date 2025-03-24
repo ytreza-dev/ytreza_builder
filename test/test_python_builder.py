@@ -1,15 +1,8 @@
 import pytest
 
-from conftest import SystemFileForTest, History, system_file, python_project, CommandHandlerForTest
-from src.command import CreateDirectory, ExecuteShell
-from src.python_project_builder import PythonProject
-
-
-def test_when_do_nothing(python_project: PythonProject, system_file: SystemFileForTest):
-    assert system_file.history() == []
-    command_handler = CommandHandlerForTest()
-    python_project.execute(command_handler)
-    assert command_handler.history() == []
+from conftest import History, python_project, CommandHandlerForTest
+from src.command import CreateDirectory
+from src.python_project_builder import PythonProject, PythonPackageManagerChoice, PythonTestManagerChoice
 
 
 @pytest.mark.parametrize("project_folder,project_name,expected", [
@@ -21,7 +14,17 @@ def test_create_project_directory(project_folder: str, project_name: str, expect
                                   python_project: PythonProject, command_handler: CommandHandlerForTest):
     (python_project
      .having_configuration(project_folder=project_folder, project_name=project_name)
-     .with_pipenv()
      .execute(command_handler))
 
     assert expected in command_handler.history()
+
+
+def test_choose_package_manager_after_configuration(python_project: PythonProject):
+    assert isinstance(python_project.having_configuration(), PythonPackageManagerChoice)
+
+
+def test_choose_test_manager_after_package_manager(python_project: PythonProject):
+    assert isinstance(python_project
+                      .having_configuration()
+                      .then()
+                      , PythonTestManagerChoice)

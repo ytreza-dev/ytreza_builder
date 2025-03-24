@@ -50,7 +50,7 @@ def system_file() -> SystemFileForTest:
 
 @pytest.fixture
 def python_project(system_file: SystemFileForTest) -> PythonProject:
-    return PythonProject(system_file=system_file)
+    return PythonProject()
 
 
 @pytest.fixture()
