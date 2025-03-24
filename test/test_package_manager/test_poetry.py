@@ -1,6 +1,6 @@
 from src.command import ExecuteShell
 from src.python_project_builder import PythonPackageManagerChoice
-from test_package_manager.base_test_package_manager_choice import BaseTestPackageManagerChoice
+from test.test_package_manager.base_test_package_manager_choice import BaseTestPackageManagerChoice
 
 
 class TestProjectWithPoetry(BaseTestPackageManagerChoice):

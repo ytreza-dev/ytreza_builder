@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from conftest import CommandHandlerForTest
+from test.conftest import CommandHandlerForTest
 from src.action_plan import ActionPlan
 from src.command import DummyCommand
 

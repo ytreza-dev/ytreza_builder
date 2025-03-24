@@ -1,6 +1,6 @@
 import pytest
 
-from conftest import History, python_project, CommandHandlerForTest
+from test.conftest import History, python_project, CommandHandlerForTest
 from src.command import CreateDirectory, ProjectPath
 from src.python_project_builder import PythonProject, PythonPackageManagerChoice, PythonTestManagerChoice
 

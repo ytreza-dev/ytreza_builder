@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import Union
 
 
 @dataclass(frozen=True)
@@ -23,8 +22,10 @@ class ExecuteShell:
     working_directory: str
 
 
-Command = DummyCommand | CreateDirectory | ExecuteShell
-
 @dataclass(frozen=True)
 class InstallPackage:
     package_name: str
+
+
+Command = DummyCommand | CreateDirectory | ExecuteShell | InstallPackage
+

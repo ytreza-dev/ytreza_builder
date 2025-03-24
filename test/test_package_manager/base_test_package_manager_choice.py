@@ -1,6 +1,6 @@
 from abc import ABC
 
-from base_test_any_step import BaseTestAnyStep
+from test.base_test_any_step import BaseTestAnyStep
 from src.action_plan import ActionPlan
 from src.python_project_builder import PythonPackageManagerChoice
 
