@@ -8,7 +8,7 @@ from src.command import Command
 class ActionPlan:
     commands: tuple[Command, ...] = ()
 
-    def prepare(self, command: Command) -> 'ActionPlan':
-        return ActionPlan(commands=self.commands + (command,))
+    def prepare(self, *command: Command) -> 'ActionPlan':
+        return ActionPlan(commands=self.commands + tuple([c for c in command]))
 
 
