@@ -4,8 +4,8 @@ from unittest.mock import patch
 
 import pytest
 
-import src.python_package_manager as pm
 import src.command as cmd
+import src.python_package_manager as pm
 from src.action_plan import ActionPlan
 from src.command import ProjectPath
 from src.command_handler import CommandHandler
