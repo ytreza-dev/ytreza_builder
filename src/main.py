@@ -8,7 +8,7 @@ def main():
     command_handler = CommandHandler()
     (python_project
      .having_configuration(project_name="test", project_folder="c:/temp")
-     .with_pipenv()
+     .with_poetry()
      .execute(command_handler=command_handler))
 
 
