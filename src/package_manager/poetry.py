@@ -13,4 +13,4 @@ class PoetryBuiltIn:
         return self
 
     def execute(self, command_handler: CommandHandlerPort) -> None:
-        command_handler.execute_all(self._commands)
+        command_handler.execute_all(self._commands, {})

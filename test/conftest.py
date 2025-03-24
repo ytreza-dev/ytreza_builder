@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from typing import Any
 
 import pytest
 
@@ -38,7 +39,7 @@ class CommandHandlerForTest(CommandHandlerPort):
     def history(self) -> list[Command]:
         return self._history
 
-    def execute_all(self, commands: list[Command]):
+    def execute_all(self, commands: list[Command], configuration: dict[str, Any]):
         self._history.extend(commands)
 
 

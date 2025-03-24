@@ -3,8 +3,13 @@ from typing import Union
 
 
 @dataclass(frozen=True)
+class ProjectPath:
+    pass
+
+
+@dataclass(frozen=True)
 class CreateDirectory:
-    path: str
+    path: ProjectPath
 
 
 @dataclass(frozen=True)
