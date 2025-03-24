@@ -24,3 +24,7 @@ class ExecuteShell:
 
 
 Command = DummyCommand | CreateDirectory | ExecuteShell
+
+@dataclass(frozen=True)
+class InstallPackage:
+    package_name: str

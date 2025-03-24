@@ -6,6 +6,7 @@ from src.command import Command, CreateDirectory, ProjectPath
 from src.command_handler_port import CommandHandlerPort
 from src.package_manager.pipenv import PipenvBuiltIn
 from src.package_manager.poetry import PoetryBuiltIn
+from src.package_test_manager.pytest import PytestBuiltIn
 
 
 # @dataclass(frozen=True)
@@ -32,7 +33,7 @@ class SystemFilePort(ABC):
         pass
 
 
-class PythonTestManagerChoice:
+class PythonTestManagerChoice(IsExecutable, PytestBuiltIn):
     pass
 
 
@@ -41,9 +42,11 @@ class PythonPackageManagerChoice(IsExecutable, PoetryBuiltIn, PipenvBuiltIn):
         IsExecutable.__init__(self, action_plan, configuration)
         PoetryBuiltIn.__init__(self, action_plan)
         PipenvBuiltIn.__init__(self, action_plan)
+        self._action_plan = action_plan
+        self._configuration = configuration
 
     def then(self) -> PythonTestManagerChoice:
-        return PythonTestManagerChoice()
+        return PythonTestManagerChoice(action_plan=self._action_plan, configuration=self._configuration)
 
 
 class PythonProject:
