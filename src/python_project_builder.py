@@ -20,7 +20,7 @@ class IsExecutable:
         self._action_plan = action_plan
 
     def execute(self, command_handler: CommandHandlerPort):
-        command_handler.execute_all({}, self._action_plan)
+        command_handler.execute_all(self._configuration, self._action_plan)
 
 
 class SystemFilePort(ABC):
@@ -51,7 +51,7 @@ class PythonPackageManagerChoice(IsExecutable, PoetryBuiltIn, PipenvBuiltIn):
 
 class PythonProject:
     def __init__(self) -> None:
-        self._action_plan = ActionPlan().prepare(CreateDirectory(path=ProjectPath()))
+        self._action_plan = ActionPlan()
 
 
     def having_configuration(self, **kwargs) -> PythonPackageManagerChoice:

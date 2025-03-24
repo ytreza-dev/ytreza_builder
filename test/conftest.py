@@ -35,12 +35,17 @@ class SystemFileForTest(SystemFilePort):
 
 class CommandHandlerForTest(CommandHandlerPort):
     def __init__(self) -> None:
+        self._configuration : dict[str, Any]= {}
         self._history: list[Command] = []
 
     def history(self) -> list[Command]:
         return self._history
 
+    def configuration(self) -> dict[str, Any]:
+        return self._configuration
+
     def execute_all(self, configuration: dict[str, Any], action_plan: ActionPlan):
+        self._configuration = configuration
         self._history.extend(action_plan.commands)
 
 

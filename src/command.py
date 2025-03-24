@@ -35,4 +35,9 @@ class UsePackageManager:
     package_manager: PackageManager
 
 
-Command = DummyCommand | CreateDirectory | ExecuteShell | InstallPackage | UsePackageManager
+@dataclass(frozen=True)
+class CreateProject:
+    pass
+
+
+Command = DummyCommand | CreateDirectory | ExecuteShell | InstallPackage | UsePackageManager | CreateProject

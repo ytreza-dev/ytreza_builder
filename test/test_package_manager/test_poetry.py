@@ -11,5 +11,6 @@ class TestProjectWithPoetry(BaseTestPackageManagerChoice):
     def expected_command(self):
         return [
             cmd.ExecuteShell(command_line="python -m pip install --user poetry", working_directory="."),
-            cmd.UsePackageManager(package_manager.Poetry)
+            cmd.UsePackageManager(package_manager.Poetry()),
+            cmd.CreateProject(),
         ]

@@ -12,6 +12,7 @@ class PipenvBuiltIn:
     def with_pipenv(self) -> Self:
         self._action_plan = self._action_plan.prepare(
             cmd.ExecuteShell(command_line="python -m pip install --user pipenv", working_directory="."),
-            cmd.UsePackageManager(package_manager.Pipenv())
+            cmd.UsePackageManager(package_manager.Pipenv()),
+            cmd.CreateDirectory(cmd.ProjectPath()),
         )
         return self

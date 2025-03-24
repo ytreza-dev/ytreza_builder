@@ -6,8 +6,9 @@ def main():
     python_project = PythonProject()
     command_handler = CommandHandler()
     (python_project
-     .having_configuration(project_name="test", project_folder="c:/temp")
-     .with_poetry()
+     .having_configuration(project_name="test3", project_folder="c:/temp")
+     .with_poetry().then()
+     .with_pytest()
      .execute(command_handler=command_handler))
 
 

@@ -32,7 +32,7 @@ class PoetryPackageManager(PackageManagerStrategy):
 
 
 class CommandHandler(CommandHandlerPort):
-    def __init__(self):
+    def __init__(self) -> None:
         self._package_manager_strategy: PackageManagerStrategy = NoPackageManager()
 
     def execute_all(self, configuration: dict[str, Any], action_plan: ActionPlan):
