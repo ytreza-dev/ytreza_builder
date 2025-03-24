@@ -1,14 +1,12 @@
-from conftest import CommandHandlerForTest
 from src.command import ExecuteShell
-from src.package_manager.poetry import PoetryBuiltIn
 from src.python_project_builder import PythonPackageManagerChoice
+from test_package_manager.base_test_package_manager_choice import BaseTestPackageManagerChoice
 
 
-def test_create_project_with_poetry(command_handler: CommandHandlerForTest):
-    project = PythonPackageManagerChoice(commands=[], configuration={})
-    (project
-     .with_poetry()
-     .execute(command_handler))
+class TestProjectWithPoetry(BaseTestPackageManagerChoice):
+    def action(self, step: PythonPackageManagerChoice):
+        return step.with_poetry()
 
-    assert ExecuteShell(command_line="python -m pip install --user poetry",
-                        working_directory=".") in command_handler.history()
+    def expected_command(self):
+        return ExecuteShell(command_line="python -m pip install --user poetry",
+                            working_directory=".")

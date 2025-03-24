@@ -7,6 +7,11 @@ class ProjectPath:
     pass
 
 
+@dataclass(frozen=True, order=True)
+class DummyCommand:
+    value: str
+
+
 @dataclass(frozen=True)
 class CreateDirectory:
     path: ProjectPath
@@ -18,4 +23,4 @@ class ExecuteShell:
     working_directory: str
 
 
-Command = CreateDirectory | ExecuteShell
+Command = DummyCommand | CreateDirectory | ExecuteShell

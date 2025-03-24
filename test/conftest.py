@@ -3,9 +3,10 @@ from typing import Any
 
 import pytest
 
-from src.python_project_builder import SystemFilePort, PythonProject
+from src.action_plan import ActionPlan
+from src.command import Command, CreateDirectory, ProjectPath
 from src.command_handler_port import CommandHandlerPort
-from src.command import Command
+from src.python_project_builder import SystemFilePort, PythonProject
 
 
 @dataclass(frozen=True)
@@ -39,8 +40,8 @@ class CommandHandlerForTest(CommandHandlerPort):
     def history(self) -> list[Command]:
         return self._history
 
-    def execute_all(self, commands: list[Command], configuration: dict[str, Any]):
-        self._history.extend(commands)
+    def execute_all(self, configuration: dict[str, Any], action_plan: ActionPlan):
+        self._history.extend(action_plan.commands)
 
 
 
@@ -57,3 +58,8 @@ def python_project(system_file: SystemFileForTest) -> PythonProject:
 @pytest.fixture()
 def command_handler() -> CommandHandlerForTest:
     return CommandHandlerForTest()
+
+
+@pytest.fixture
+def any_plan() -> ActionPlan:
+    return ActionPlan().prepare(CreateDirectory(path=ProjectPath()))

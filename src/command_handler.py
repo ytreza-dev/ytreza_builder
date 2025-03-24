@@ -2,13 +2,14 @@ import subprocess
 from pathlib import Path
 from typing import assert_never, Any
 
-from src.command import Command, CreateDirectory, ExecuteShell, ProjectPath
+from src.action_plan import ActionPlan
+from src.command import Command, CreateDirectory, ExecuteShell, ProjectPath, DummyCommand
 from src.command_handler_port import CommandHandlerPort
 
 
 class CommandHandler(CommandHandlerPort):
-    def execute_all(self, commands: list[Command], configuration: dict[str, Any]):
-        for command in commands:
+    def execute_all(self, configuration: dict[str, Any], action_plan: ActionPlan):
+        for command in action_plan.commands:
             self._execute(command, configuration)
 
 
@@ -19,6 +20,9 @@ class CommandHandler(CommandHandlerPort):
 
             case ExecuteShell(command_line=command_line, working_directory=working_directory):
                 self._execute_shell(command_line=command_line, working_directory=working_directory)
+
+            case DummyCommand(value=value):
+                raise NotImplementedError(f"DummyCommand {value} is not implemented")
 
             case _:
                 assert_never(command)
