@@ -1,0 +1,17 @@
+[project]
+name = "ytreza-builder"
+version = "0.1.0"
+description = "Helper to create project with the actual state of the art"
+authors = [
+    {name = "Jonathan LAURENT",email = "johjo@ytreza.org"}
+]
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "pytest (>=8.3.5,<9.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
