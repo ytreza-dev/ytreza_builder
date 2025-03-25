@@ -12,23 +12,23 @@ from src.command_handler_port import CommandHandlerPort
 
 class PackageManagerStrategy(ABC):
     @abstractmethod
-    def install(self, package_name: str) -> None:
+    def install(self, package_name: str, project_path: str) -> None:
         pass
 
 
 class NoPackageManager(PackageManagerStrategy):
-    def install(self, package_name: str) -> None:
+    def install(self, package_name: str, project_path: str) -> None:
         raise NotImplementedError("No package manager selected")
 
 
 class PipenvPackageManager(PackageManagerStrategy):
-    def install(self, package_name: str) -> None:
-        subprocess.run(f"pipenv install {package_name}".split(" "), cwd=None)
+    def install(self, package_name: str, project_path: str) -> None:
+        subprocess.run(f"pipenv install {package_name}".split(" "), cwd=project_path)
 
 
 class PoetryPackageManager(PackageManagerStrategy):
-    def install(self, package_name: str) -> None:
-        subprocess.run(f"poetry add {package_name}".split(" "), cwd=None)
+    def install(self, package_name: str, project_path: str) -> None:
+        subprocess.run(f"poetry add {package_name}".split(" "), cwd=project_path)
 
 
 class CommandHandler(CommandHandlerPort):
@@ -40,6 +40,7 @@ class CommandHandler(CommandHandlerPort):
             self._execute(command, configuration)
 
     def _execute(self, command: cmd.Command, configuration: dict[str, Any]) -> None:
+        print(command)
         match command:
             case cmd.CreateDirectory():
                 self._create_directory(command, configuration)
@@ -54,29 +55,19 @@ class CommandHandler(CommandHandlerPort):
                 self._select_package_manager(package_manager)
 
             case cmd.InstallPackage(package_name=package_name):
-                self._package_manager_strategy.install(package_name)
+                self._package_manager_strategy.install(package_name,
+                                                       project_path=self._get_path(cmd.ProjectPath(), configuration))
 
             case _:
                 assert_never(command)
 
     def _create_directory(self, command: cmd.CreateDirectory, configuration: dict[str, Any]) -> None:
-        match command.path:
-            case ProjectPath():
-                project_path = self._full_project_folder(configuration)
-                Path(project_path).mkdir()
-
-            case _:
-                assert_never(command.path)
-
-    @staticmethod
-    def _full_project_folder(configuration: dict[str, Any]):
-        project_name = configuration["project_name"]
-        project_folder = configuration["project_folder"]
-        full_project_folder = f"{project_folder}/{project_name}"
-        return full_project_folder
+        project_path = self._get_path(command.path, configuration)
+        Path(project_path).mkdir()
 
     def _execute_shell(self, command: cmd.ExecuteShell, configuration: dict[str, Any]):
-        subprocess.run(command.command_line.split(" "), cwd=self._full_project_folder(configuration))
+        command_line = command.command_line.format(**configuration)
+        subprocess.run(command_line.split(" "), cwd=self._get_path(command.working_directory, configuration))
 
     @staticmethod
     def _install_package(package_name: str):
@@ -92,3 +83,18 @@ class CommandHandler(CommandHandlerPort):
 
             case _:
                 assert_never(package_manager)
+
+    @staticmethod
+    def _get_path(path: cmd.AbstractPath, configuration: dict[str, Any]) -> str:
+        match path:
+            case ProjectPath():
+                project_name = configuration["project_name"]
+                project_folder = configuration["project_folder"]
+                return f"{project_folder}/{project_name}"
+
+            case cmd.ProjectParentPath():
+                project_folder = configuration["project_folder"]
+                return project_folder
+
+            case _:
+                assert_never(path)
