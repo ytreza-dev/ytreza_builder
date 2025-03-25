@@ -2,7 +2,6 @@ from abc import ABC, abstractmethod
 from typing import Any
 
 from src.action_plan import ActionPlan
-from src.command import Command, CreateDirectory, ProjectPath
 from src.command_handler_port import CommandHandlerPort
 from src.package_manager.pipenv import PipenvBuiltIn
 from src.package_manager.poetry import PoetryBuiltIn
@@ -34,6 +33,11 @@ class SystemFilePort(ABC):
 
 
 class PythonTestManagerChoice(IsExecutable, PytestBuiltIn):
+    def then_add_samples(self):
+        return PythonSampleChoice()
+
+
+class PythonSampleChoice():
     pass
 
 
@@ -45,7 +49,7 @@ class PythonPackageManagerChoice(IsExecutable, PoetryBuiltIn, PipenvBuiltIn):
         self._action_plan = action_plan
         self._configuration = configuration
 
-    def then(self) -> PythonTestManagerChoice:
+    def then_test_project(self) -> PythonTestManagerChoice:
         return PythonTestManagerChoice(action_plan=self._action_plan, configuration=self._configuration)
 
 

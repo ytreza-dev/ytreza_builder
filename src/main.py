@@ -6,9 +6,9 @@ def main():
     python_project = PythonProject()
     command_handler = CommandHandler()
     (python_project
-     .having_configuration(project_name="test5", project_folder="c:/temp")
-     .with_poetry().then()
-     .with_pytest()
+     .having_configuration(project_name="todolist_hexagon", project_folder="C:/Projets/python/todolist")
+     .with_poetry().then_test_project()
+     .with_pytest().then().use_failling_test_sample()
      .execute(command_handler=command_handler))
 
 
