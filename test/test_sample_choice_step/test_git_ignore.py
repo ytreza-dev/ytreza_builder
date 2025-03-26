@@ -6,12 +6,12 @@ from src.action_plan import ActionPlan
 from src.python_project_builder import PythonTestManagerChoice, PythonSampleChoice
 
 
-class TestFailingTestSample(BaseTestAnyStep):
+class TestGitIgnoreSample(BaseTestAnyStep):
     def from_step(self, action_plan: ActionPlan, configuration: dict[str, Any]):
         return PythonSampleChoice(action_plan=action_plan, configuration=configuration)
 
     def action(self, step: PythonSampleChoice):
-        return step.with_failing_test()
+        return step.with_git_ignore()
 
     def expected_command(self):
-        return [cmd.CopySample(source="python/failing_test", destination=cmd.ProjectPath())]
+        return [cmd.CopySample(source="python/gitignore", destination=cmd.ProjectPath())]
