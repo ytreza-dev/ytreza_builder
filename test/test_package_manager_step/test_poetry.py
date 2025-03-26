@@ -1,7 +1,7 @@
 import src.command as cmd
 import src.python_package_manager as package_manager
 from src.python_project_builder import PythonPackageManagerChoice
-from test.test_package_manager.base_test_package_manager_choice import BaseTestPackageManagerChoice
+from test.test_package_manager_step.base_test_package_manager_choice import BaseTestPackageManagerChoice
 
 
 class TestProjectWithPoetry(BaseTestPackageManagerChoice):

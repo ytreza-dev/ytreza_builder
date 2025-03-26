@@ -6,6 +6,7 @@ from src.command_handler_port import CommandHandlerPort
 from src.package_manager.pipenv import PipenvBuiltIn
 from src.package_manager.poetry import PoetryBuiltIn
 from src.package_test_manager.pytest import PytestBuiltIn
+from src.sample_choice.with_failing_test import WithFailingTest
 
 
 # @dataclass(frozen=True)
@@ -34,10 +35,10 @@ class SystemFilePort(ABC):
 
 class PythonTestManagerChoice(IsExecutable, PytestBuiltIn):
     def then_add_samples(self):
-        return PythonSampleChoice()
+        return PythonSampleChoice(self._action_plan, self._configuration)
 
 
-class PythonSampleChoice():
+class PythonSampleChoice(IsExecutable, WithFailingTest):
     pass
 
 

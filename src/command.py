@@ -43,4 +43,9 @@ class UsePackageManager:
     package_manager: PackageManager
 
 
+@dataclass()
+class CopySample:
+    source: str
+    destination: AbstractPath
+
 Command = DummyCommand | CreateDirectory | ExecuteShell | InstallPackage | UsePackageManager

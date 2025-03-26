@@ -8,7 +8,7 @@ def main():
     (python_project
      .having_configuration(project_name="todolist_hexagon", project_folder="C:/Projets/python/todolist")
      .with_poetry().then_test_project()
-     .with_pytest().then().use_failling_test_sample()
+     .with_pytest().then_add_samples().with_failing_test()
      .execute(command_handler=command_handler))
 
 

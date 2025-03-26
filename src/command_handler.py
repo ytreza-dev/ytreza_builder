@@ -1,3 +1,5 @@
+import os
+import shutil
 import subprocess
 from abc import ABC, abstractmethod
 from pathlib import Path
@@ -5,9 +7,11 @@ from typing import assert_never, Any
 
 import src.command as cmd
 import src.python_package_manager as pm
+from src import SAMPLE_DIR
 from src.action_plan import ActionPlan
 from src.command import ProjectPath
 from src.command_handler_port import CommandHandlerPort
+from src.copy_sample_command_handler import SampleCopier, FileReaderPort, Directory, FileCopierPort
 
 
 class PackageManagerStrategy(ABC):
@@ -29,6 +33,19 @@ class PipenvPackageManager(PackageManagerStrategy):
 class PoetryPackageManager(PackageManagerStrategy):
     def install(self, package_name: str, project_path: str) -> None:
         subprocess.run(f"poetry add {package_name}".split(" "), cwd=project_path)
+
+
+class FileReader(FileReaderPort):
+    def read(self, src: str) -> Directory:
+        (root_path, directories, filenames) = next(os.walk(src))
+        return Directory(path=root_path, directories=directories, filenames=filenames)
+
+
+
+class FileCopier(FileCopierPort):
+    def copy(self, src: str, dst: str) -> None:
+        os.makedirs(os.path.dirname(dst), exist_ok=True)
+        shutil.copy(src, dst)
 
 
 class CommandHandler(CommandHandlerPort):
@@ -58,8 +75,25 @@ class CommandHandler(CommandHandlerPort):
                 self._package_manager_strategy.install(package_name,
                                                        project_path=self._get_path(cmd.ProjectPath(), configuration))
 
+            case cmd.CopySample(source=source, destination=destination):
+                self._copy_sample(src=f"{SAMPLE_DIR}/{source}", dst=self._get_path(destination, configuration))
+
             case _:
                 assert_never(command)
+
+    @staticmethod
+    def _copy_sample(src: str, dst: str) -> None:
+        sample_copier = SampleCopier(file_reader=FileReader(), file_copier=FileCopier())
+        sample_copier.execute(src=src, dst=dst)
+
+    def rename_files_from_directory(self, directory: str) -> None:
+        for root, directories, files in os.walk(directory):
+            for file in files:
+                print(f"file: {file}")
+                os.rename(os.path.join(root, file), os.path.join(root, file) + ".toto")
+            for directory in directories:
+                self.rename_files_from_directory(os.path.join(root, directory))
+            print(os.listdir(root))
 
     def _create_directory(self, command: cmd.CreateDirectory, configuration: dict[str, Any]) -> None:
         project_path = self._get_path(command.path, configuration)
