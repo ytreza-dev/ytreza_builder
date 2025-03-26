@@ -93,10 +93,10 @@ def test_copy_directory(sample_copier: SampleCopier, file_reader: FileReaderForT
 
 
 @pytest.mark.parametrize("filename, expected", [
-    ["file_1.py.sample", Copy(src="src/file_1.py.sample", dst="dst/file_1.sample.py")],
-    ["file_2.py.sample", Copy(src="src/file_2.py.sample", dst="dst/file_2.sample.py")],
-    ["file.3.py.sample", Copy(src="src/file.3.py.sample", dst="dst/file.3.sample.py")],
-    ["f.i.l.e.4.py.sample", Copy(src="src/f.i.l.e.4.py.sample", dst="dst/f.i.l.e.4.sample.py")],
+    ["file_1.py.sample", Copy(src="src/file_1.py.sample", dst="dst/file_1_sample.py")],
+    ["file_2.py.sample", Copy(src="src/file_2.py.sample", dst="dst/file_2_sample.py")],
+    ["file.3.py.sample", Copy(src="src/file.3.py.sample", dst="dst/file.3_sample.py")],
+    ["f.i.l.e.4.py.sample", Copy(src="src/f.i.l.e.4.py.sample", dst="dst/f.i.l.e.4_sample.py")],
 ])
 def test_rename_sample(filename: str, expected: Copy, sample_copier: SampleCopier, file_reader: FileReaderForTest,
                        file_copier: FileCopierForTest):

@@ -47,5 +47,5 @@ class SampleCopier:
     def _rename_file(filename: str) -> str:
         filename_parts = filename.split(".")
         if filename_parts[-1] == "sample":
-            return ".".join(filename_parts[0: -2] + [filename_parts[-1], filename_parts[-2]])
+            return ".".join(filename_parts[0: -2]) + "_" + filename_parts[-1] + "." + filename_parts[-2]
         return filename
