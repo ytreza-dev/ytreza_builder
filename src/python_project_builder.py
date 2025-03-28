@@ -8,6 +8,7 @@ from src.package_manager.poetry import PoetryBuiltIn
 from src.package_test_manager.pytest import PytestBuiltIn
 from src.sample_choice.with_failing_test import WithFailingTest
 from src.sample_choice.with_git_ignore import WithGitIgnore
+from src.sample_choice.with_mypy import WithMypy
 
 
 # @dataclass(frozen=True)
@@ -39,7 +40,7 @@ class PythonTestManagerChoice(IsExecutable, PytestBuiltIn):
         return PythonSampleChoice(self._action_plan, self._configuration)
 
 
-class PythonSampleChoice(IsExecutable, WithFailingTest, WithGitIgnore):
+class PythonSampleChoice(IsExecutable, WithFailingTest, WithGitIgnore, WithMypy):
     pass
 
 

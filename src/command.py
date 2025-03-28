@@ -48,4 +48,4 @@ class CopySample:
     source: str
     destination: AbstractPath
 
-Command = DummyCommand | CreateDirectory | ExecuteShell | InstallPackage | UsePackageManager
+Command = DummyCommand | CreateDirectory | ExecuteShell | InstallPackage | UsePackageManager | CopySample
