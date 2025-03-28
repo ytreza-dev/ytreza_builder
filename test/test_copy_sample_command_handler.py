@@ -7,7 +7,7 @@ from src.copy_sample_command_handler import FileReaderPort, Directory, FileCopie
 
 
 class FileReaderForTest(FileReaderPort):
-    def __init__(self):
+    def __init__(self) -> None:
         self._directories: dict[str, Directory] = {}
 
     def read(self, src: str) -> Directory:
