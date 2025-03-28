@@ -1,8 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Any
 
-from src.action_plan import ActionPlan
-from src.command import Command
+from ytreza_builder.action_plan import ActionPlan
 
 
 class CommandHandlerPort(ABC):

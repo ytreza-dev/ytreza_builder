@@ -5,13 +5,13 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import assert_never, Any
 
-import src.command as cmd
-import src.python_package_manager as pm
-from src import SAMPLE_DIR
-from src.action_plan import ActionPlan
-from src.command import ProjectPath
-from src.command_handler_port import CommandHandlerPort
-from src.copy_sample_command_handler import SampleCopier, FileReaderPort, Directory, FileCopierPort
+import ytreza_builder.command as cmd
+import ytreza_builder.python_package_manager as pm
+from ytreza_builder import SAMPLE_DIR
+from ytreza_builder.action_plan import ActionPlan
+from ytreza_builder.command import ProjectPath
+from ytreza_builder.copy_sample_command_handler import SampleCopier, FileReaderPort, Directory, FileCopierPort
+from ytreza_builder.command_handler_port import CommandHandlerPort
 
 
 class PackageManagerStrategy(ABC):

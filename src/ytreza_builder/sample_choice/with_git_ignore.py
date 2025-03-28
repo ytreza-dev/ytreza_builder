@@ -1,5 +1,5 @@
-from src import command
-from src.action_plan import ActionPlan
+from ytreza_builder import command
+from ytreza_builder.action_plan import ActionPlan
 
 
 class WithGitIgnore:

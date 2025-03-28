@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
-from src import command as cmd
+from ytreza_builder import command as cmd
 
 
 class CopySampleHandler:

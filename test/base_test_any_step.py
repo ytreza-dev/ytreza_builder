@@ -2,8 +2,8 @@ from abc import ABC, abstractmethod
 from typing import Any
 
 from test.conftest import CommandHandlerForTest
-from src.action_plan import ActionPlan
-from src.command import DummyCommand
+from ytreza_builder.action_plan import ActionPlan
+from ytreza_builder.command import DummyCommand
 
 
 class BaseTestAnyStep(ABC):

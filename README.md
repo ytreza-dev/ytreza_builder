@@ -5,8 +5,8 @@ This tool allow to create easily project with the state of the art of our team.
 ## How to use the tool ?
 
 ```python
-from src.command_handler import CommandHandler
-from src.python_project_builder import PythonProject
+from ytreza_builder.command_handler  import CommandHandler
+from python_project_builder import PythonProject
 
 
 def main():

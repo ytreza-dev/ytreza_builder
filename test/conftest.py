@@ -3,10 +3,10 @@ from typing import Any
 
 import pytest
 
-from src.action_plan import ActionPlan
-from src.command import Command, CreateDirectory, ProjectPath
-from src.command_handler_port import CommandHandlerPort
-from src.python_project_builder import SystemFilePort, PythonProject
+from ytreza_builder.action_plan import ActionPlan
+from ytreza_builder.command import Command, CreateDirectory, ProjectPath
+from ytreza_builder.command_handler_port import CommandHandlerPort
+from ytreza_builder.python_project_builder import SystemFilePort, PythonProject
 
 
 @dataclass(frozen=True)

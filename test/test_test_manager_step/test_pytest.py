@@ -1,9 +1,9 @@
 from typing import Any
 
 from test.base_test_any_step import BaseTestAnyStep
-from src import command
-from src.action_plan import ActionPlan
-from src.python_project_builder import PythonTestManagerChoice
+from ytreza_builder import command
+from ytreza_builder.action_plan import ActionPlan
+from ytreza_builder.python_project_builder import PythonTestManagerChoice
 
 
 class TestTestManagerChoice(BaseTestAnyStep):

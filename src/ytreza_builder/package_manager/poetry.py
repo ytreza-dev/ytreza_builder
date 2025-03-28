@@ -1,8 +1,8 @@
 from typing import Self
 
-import src.command as cmd
-import src.python_package_manager as package_manager
-from src.action_plan import ActionPlan
+import ytreza_builder.command as cmd
+import ytreza_builder.python_package_manager as package_manager
+from ytreza_builder.action_plan import ActionPlan
 
 
 class PoetryBuiltIn:

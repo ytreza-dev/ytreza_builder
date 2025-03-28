@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Self
 
-from src.command import Command
+from ytreza_builder.command import Command
 
 
 @dataclass(frozen=True)

@@ -1,5 +1,5 @@
-from src.command_handler import CommandHandler
-from src.python_project_builder import PythonProject
+from ytreza_builder.command_handler  import CommandHandler
+from ytreza_builder.python_project_builder import PythonProject
 
 
 def main():

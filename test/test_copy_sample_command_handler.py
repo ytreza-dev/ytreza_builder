@@ -1,9 +1,8 @@
-import os
 from dataclasses import dataclass
 
 import pytest
 
-from src.copy_sample_command_handler import FileReaderPort, Directory, FileCopierPort, SampleCopier
+from ytreza_builder.copy_sample_command_handler import FileReaderPort, Directory, FileCopierPort, SampleCopier
 
 
 class FileReaderForTest(FileReaderPort):

@@ -1,6 +1,6 @@
-from src.python_project_builder import PythonProject, PythonPackageManagerChoice, PythonTestManagerChoice, \
-    PythonSampleChoice
 from test.conftest import python_project
+from ytreza_builder.python_project_builder import PythonProject, PythonPackageManagerChoice, PythonTestManagerChoice, \
+    PythonSampleChoice
 
 
 def test_choose_package_manager_after_configuration(python_project: PythonProject):

@@ -4,11 +4,11 @@ from unittest.mock import patch
 
 import pytest
 
-import src.command as cmd
-import src.python_package_manager as pm
-from src.action_plan import ActionPlan
-from src.command import ProjectPath, ProjectParentPath
-from src.command_handler import CommandHandler
+import ytreza_builder.command as cmd
+import ytreza_builder.python_package_manager as pm
+from ytreza_builder.action_plan import ActionPlan
+from ytreza_builder.command import ProjectPath, ProjectParentPath
+from ytreza_builder.command_handler  import CommandHandler
 
 
 def test_create_directory_from_project_path():
