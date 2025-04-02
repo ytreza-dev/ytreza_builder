@@ -1,8 +1,10 @@
 from dataclasses import dataclass
+from typing import Dict
 
 import pytest
 
-from ytreza_builder.copy_sample_command_handler import FileReaderPort, Directory, FileCopierPort, SampleCopier
+from ytreza_builder.copy_sample_command_handler import FileReaderPort, Directory, FileCopierPort, SampleCopier, \
+    ConfigurationReaderPort
 
 
 class FileReaderForTest(FileReaderPort):
@@ -53,9 +55,25 @@ def file_reader():
     return FileReaderForTest()
 
 
+class ConfigurationReaderForTest(ConfigurationReaderPort):
+    def __init__(self):
+        self._configuration : Dict[str, str] = {}
+
+    def get(self, key) -> str:
+        return self._configuration[key]
+
+    def feed(self, key: str, value: str):
+        self._configuration[key] = value
+
+
 @pytest.fixture
-def sample_copier(file_reader: FileReaderForTest, file_copier: FileCopierForTest):
-    return SampleCopier(file_copier=file_copier, file_reader=file_reader)
+def configuration_reader() -> ConfigurationReaderForTest:
+    return ConfigurationReaderForTest()
+
+
+@pytest.fixture
+def sample_copier(file_reader: FileReaderForTest, file_copier: FileCopierForTest, configuration_reader: ConfigurationReaderForTest):
+    return SampleCopier(file_copier=file_copier, file_reader=file_reader, configuration_reader=configuration_reader)
 
 
 def test_when_nothing(file_copier: FileCopierForTest):
@@ -104,7 +122,7 @@ def test_copy_directory(sample_copier: SampleCopier, file_reader: FileReaderForT
     ["file.3.py.sample", "dst/file.3.py", Copy(src="src/file.3.py.sample", dst="dst/file.3_sample.py")],
     ["f.i.l.e.4.py.sample", "dst/f.i.l.e.4.py", Copy(src="src/f.i.l.e.4.py.sample", dst="dst/f.i.l.e.4_sample.py")],
 ])
-def test_rename_sample(filename: str, expected: Copy, existing: str, sample_copier: SampleCopier, file_reader: FileReaderForTest,
+def test_rename_sample_when_file_exist(filename: str, expected: Copy, existing: str, sample_copier: SampleCopier, file_reader: FileReaderForTest,
                        file_copier: FileCopierForTest):
     file_reader.feed(directory=Directory(path="src", directories=[], filenames=[filename]))
     file_reader.feed_exist(path=existing)
@@ -116,5 +134,16 @@ def test_dont_rename_sample_when_file_does_not_exist(sample_copier: SampleCopier
     sample_copier.execute(src="src", dst="dst")
     assert file_copier.history() == [Copy(src="src/file.py.sample", dst="dst/file.py")]
 
+
+@pytest.mark.parametrize("key, value, expected", [
+    ["key", "value", Copy(src="src/((key))/file", dst="dst/value/file")],
+    ["otherKey", "otherValue", Copy(src="src/((otherKey))/file", dst="dst/otherValue/file")],
+])
+def test_read_configuration_for_directories(key: str, value: str, expected: Copy, sample_copier: SampleCopier, file_reader: FileReaderForTest, file_copier: FileCopierForTest, configuration_reader: ConfigurationReaderForTest):
+    file_reader.feed(directory=Directory(path="src", directories=[f"(({key}))"], filenames=[]))
+    file_reader.feed(directory=Directory(path=f"src/(({key}))", directories=[], filenames=["file"]))
+    configuration_reader.feed(key=key, value=value)
+    sample_copier.execute(src="src", dst="dst")
+    assert file_copier.history() == [expected]
 
 

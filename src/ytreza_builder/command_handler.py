@@ -3,14 +3,15 @@ import shutil
 import subprocess
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import assert_never, Any
+from typing import assert_never, Any, Dict
 
 import ytreza_builder.command as cmd
 import ytreza_builder.python_package_manager as pm
 from ytreza_builder import SAMPLE_DIR
 from ytreza_builder.action_plan import ActionPlan
 from ytreza_builder.command import ProjectPath
-from ytreza_builder.copy_sample_command_handler import SampleCopier, FileReaderPort, Directory, FileCopierPort
+from ytreza_builder.copy_sample_command_handler import SampleCopier, FileReaderPort, Directory, FileCopierPort, \
+    ConfigurationReaderPort
 from ytreza_builder.command_handler_port import CommandHandlerPort
 
 
@@ -51,6 +52,14 @@ class FileCopier(FileCopierPort):
         shutil.copy(src, dst)
 
 
+class ConfigurationReader(ConfigurationReaderPort):
+    def __init__(self, configuration: Dict[str, Any]):
+        self._configuration = configuration
+
+    def get(self, key) -> str:
+        return self._configuration[key]
+
+
 class CommandHandler(CommandHandlerPort):
     def __init__(self) -> None:
         self._package_manager_strategy: PackageManagerStrategy = NoPackageManager()
@@ -79,14 +88,14 @@ class CommandHandler(CommandHandlerPort):
                                                        project_path=self._get_path(cmd.ProjectPath(), configuration))
 
             case cmd.CopySample(source=source, destination=destination):
-                self._copy_sample(src=f"{SAMPLE_DIR}/{source}", dst=self._get_path(destination, configuration))
+                self._copy_sample(src=f"{SAMPLE_DIR}/{source}", dst=self._get_path(destination, configuration), configuration=configuration)
 
             case _:
                 assert_never(command)
 
     @staticmethod
-    def _copy_sample(src: str, dst: str) -> None:
-        sample_copier = SampleCopier(file_reader=FileReader(), file_copier=FileCopier())
+    def _copy_sample(src: str, dst: str, configuration: Dict[str, Any]) -> None:
+        sample_copier = SampleCopier(file_reader=FileReader(), file_copier=FileCopier(), configuration_reader=ConfigurationReader(configuration))
         sample_copier.execute(src=src, dst=dst)
 
     def rename_files_from_directory(self, directory: str) -> None:

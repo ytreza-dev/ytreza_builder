@@ -32,10 +32,18 @@ class FileCopierPort(ABC):
         pass
 
 
+class ConfigurationReaderPort(ABC):
+    @abstractmethod
+    def get(self, key) -> str:
+        pass
+
+
 class SampleCopier:
-    def __init__(self, file_reader: FileReaderPort, file_copier: FileCopierPort):
+    def __init__(self, file_reader: FileReaderPort, file_copier: FileCopierPort,
+                 configuration_reader: ConfigurationReaderPort):
         self._file_reader = file_reader
         self._file_copier = file_copier
+        self._configuration_reader = configuration_reader
 
     def execute(self, src: str, dst: str):
         self._copy_directory(src, dst)
@@ -47,7 +55,12 @@ class SampleCopier:
             self._file_copier.copy(src=f"{src}/{filename}", dst=self._choose_destination(dst, filename))
 
         for directory in directory.directories:
-            self._copy_directory(src=f"{src}/{directory}", dst=f"{dst}/{directory}")
+            self._copy_directory(src=f"{src}/{directory}", dst=(self._choose_directory(dst, directory)))
+
+    def _choose_directory(self, dst: str, directory: str) -> str:
+        if directory.startswith("((") and directory.endswith("))"):
+            return f"{dst}/{self._configuration_reader.get(directory[2:-2])}"
+        return f"{dst}/{directory}"
 
     def _choose_destination(self, dst: str, filename: str) -> str:
         name_without_sample = f"{dst}/{self._name_without_sample(filename)}"
@@ -73,4 +86,3 @@ class SampleCopier:
         if filename_parts[-1] == "sample":
             return ".".join(filename_parts[0: -2]) + "." + filename_parts[-2]
         return filename
-

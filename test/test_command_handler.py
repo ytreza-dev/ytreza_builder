@@ -55,5 +55,5 @@ def test_install_python_package(package_manager, expected: str):
 def test_copy_sample():
     with tempfile.TemporaryDirectory() as temp_dir:
         handler = CommandHandler()
-        handler.execute_all(configuration={"project_name": "project", "project_folder": temp_dir}, action_plan=ActionPlan(commands=(cmd.CopySample(source="python/failing_test", destination=ProjectPath()), )))
-        assert (Path(temp_dir) / "project" / "tests" / "test_failing.py").is_file()
+        handler.execute_all(configuration={"project_name": "project", "project_folder": temp_dir}, action_plan=ActionPlan(commands=(cmd.CopySample(source="python/streamlit", destination=ProjectPath()), )))
+        assert (Path(temp_dir) / "project" / "src" / "project" / "main.py").is_file()
