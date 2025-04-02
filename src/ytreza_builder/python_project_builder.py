@@ -9,6 +9,7 @@ from ytreza_builder.package_test_manager.pytest import PytestBuiltIn
 from ytreza_builder.sample_choice.with_failing_test import WithFailingTest
 from ytreza_builder.sample_choice.with_git_ignore import WithGitIgnore
 from ytreza_builder.sample_choice.with_mypy import WithMypy
+from ytreza_builder.sample_choice.with_streamlit import WithStreamLit
 
 
 # @dataclass(frozen=True)
@@ -40,7 +41,7 @@ class PythonTestManagerChoice(IsExecutable, PytestBuiltIn):
         return PythonSampleChoice(self._action_plan, self._configuration)
 
 
-class PythonSampleChoice(IsExecutable, WithFailingTest, WithGitIgnore, WithMypy):
+class PythonSampleChoice(IsExecutable, WithFailingTest, WithGitIgnore, WithMypy, WithStreamLit):
     pass
 
 

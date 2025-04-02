@@ -11,7 +11,5 @@ def main():
      .with_pytest().then_add_samples().with_failing_test().with_git_ignore().with_mypy()
      .execute(command_handler=command_handler))
 
-    python_project.having_configuration().with_poetry().then_test_project().with_pytest().then_add_samples().with_failing_test().with_git_ignore()
-
 if __name__ == "__main__":
     main()
