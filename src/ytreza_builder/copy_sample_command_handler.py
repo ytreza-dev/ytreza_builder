@@ -21,6 +21,10 @@ class FileReaderPort(ABC):
     def read(self, src: str) -> Directory:
         pass
 
+    @abstractmethod
+    def is_file(self, path: str) -> bool:
+        pass
+
 
 class FileCopierPort(ABC):
     @abstractmethod
@@ -34,18 +38,39 @@ class SampleCopier:
         self._file_copier = file_copier
 
     def execute(self, src: str, dst: str):
-        self._copy(dst, src)
+        self._copy_directory(src, dst)
 
-    def _copy(self, dst, src):
-        root_directory = self._file_reader.read(src)
-        for filename in root_directory.filenames:
-            self._file_copier.copy(src=f"{src}/{filename}", dst=f"{dst}/{self._rename_file(filename)}")
-        for directory in root_directory.directories:
-            self._copy(src=f"{src}/{directory}", dst=f"{dst}/{directory}")
+    def _copy_directory(self, src: str, dst: str):
+        directory = self._file_reader.read(src)
+
+        for filename in directory.filenames:
+            self._file_copier.copy(src=f"{src}/{filename}", dst=self._choose_destination(dst, filename))
+
+        for directory in directory.directories:
+            self._copy_directory(src=f"{src}/{directory}", dst=f"{dst}/{directory}")
+
+    def _choose_destination(self, dst: str, filename: str) -> str:
+        name_without_sample = f"{dst}/{self._name_without_sample(filename)}"
+
+        if self._file_exist(name_without_sample):
+            return  f"{dst}/{self.name_when_exist(filename)}"
+
+        return name_without_sample
+
+    def _file_exist(self, name_when_not_exist):
+        return self._file_reader.is_file(name_when_not_exist)
 
     @staticmethod
-    def _rename_file(filename: str) -> str:
+    def name_when_exist(filename: str) -> str:
         filename_parts = filename.split(".")
         if filename_parts[-1] == "sample":
             return ".".join(filename_parts[0: -2]) + "_" + filename_parts[-1] + "." + filename_parts[-2]
         return filename
+
+    @staticmethod
+    def _name_without_sample(filename: str) -> str:
+        filename_parts = filename.split(".")
+        if filename_parts[-1] == "sample":
+            return ".".join(filename_parts[0: -2]) + "." + filename_parts[-2]
+        return filename
+

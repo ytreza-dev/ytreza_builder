@@ -8,6 +8,7 @@ from ytreza_builder.copy_sample_command_handler import FileReaderPort, Directory
 class FileReaderForTest(FileReaderPort):
     def __init__(self) -> None:
         self._directories: dict[str, Directory] = {}
+        self._existing_files: list[str] = []
 
     def read(self, src: str) -> Directory:
         if src not in self._directories:
@@ -15,8 +16,14 @@ class FileReaderForTest(FileReaderPort):
 
         return self._directories[src]
 
+    def is_file(self, path: str) -> bool:
+        return path in self._existing_files
+
     def feed(self, directory: Directory):
         self._directories[directory.path] = directory
+
+    def feed_exist(self, path: str):
+        self._existing_files.append(path)
 
 
 @dataclass
@@ -91,16 +98,23 @@ def test_copy_directory(sample_copier: SampleCopier, file_reader: FileReaderForT
     ]
 
 
-@pytest.mark.parametrize("filename, expected", [
-    ["file_1.py.sample", Copy(src="src/file_1.py.sample", dst="dst/file_1_sample.py")],
-    ["file_2.py.sample", Copy(src="src/file_2.py.sample", dst="dst/file_2_sample.py")],
-    ["file.3.py.sample", Copy(src="src/file.3.py.sample", dst="dst/file.3_sample.py")],
-    ["f.i.l.e.4.py.sample", Copy(src="src/f.i.l.e.4.py.sample", dst="dst/f.i.l.e.4_sample.py")],
+@pytest.mark.parametrize("filename, existing, expected", [
+    ["file_1.py.sample", "dst/file_1.py", Copy(src="src/file_1.py.sample", dst="dst/file_1_sample.py")],
+    ["file_2.py.sample", "dst/file_2.py", Copy(src="src/file_2.py.sample", dst="dst/file_2_sample.py")],
+    ["file.3.py.sample", "dst/file.3.py", Copy(src="src/file.3.py.sample", dst="dst/file.3_sample.py")],
+    ["f.i.l.e.4.py.sample", "dst/f.i.l.e.4.py", Copy(src="src/f.i.l.e.4.py.sample", dst="dst/f.i.l.e.4_sample.py")],
 ])
-def test_rename_sample(filename: str, expected: Copy, sample_copier: SampleCopier, file_reader: FileReaderForTest,
+def test_rename_sample(filename: str, expected: Copy, existing: str, sample_copier: SampleCopier, file_reader: FileReaderForTest,
                        file_copier: FileCopierForTest):
     file_reader.feed(directory=Directory(path="src", directories=[], filenames=[filename]))
+    file_reader.feed_exist(path=existing)
     sample_copier.execute(src="src", dst="dst")
     assert file_copier.history() == [expected]
+
+def test_dont_rename_sample_when_file_does_not_exist(sample_copier: SampleCopier, file_reader: FileReaderForTest, file_copier: FileCopierForTest):
+    file_reader.feed(directory=Directory(path="src", directories=[], filenames=["file.py.sample"]))
+    sample_copier.execute(src="src", dst="dst")
+    assert file_copier.history() == [Copy(src="src/file.py.sample", dst="dst/file.py")]
+
 
 

@@ -36,6 +36,9 @@ class PoetryPackageManager(PackageManagerStrategy):
 
 
 class FileReader(FileReaderPort):
+    def is_file(self, path: str) -> bool:
+        return Path(path).is_file()
+
     def read(self, src: str) -> Directory:
         (root_path, directories, filenames) = next(os.walk(src))
         return Directory(path=root_path, directories=directories, filenames=filenames)
