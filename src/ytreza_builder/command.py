@@ -25,7 +25,6 @@ class DummyCommand:
 class CreateDirectory:
     path: AbstractPath
 
-
 @dataclass(frozen=True)
 class ExecuteShell:
     command_line: str
@@ -35,6 +34,7 @@ class ExecuteShell:
 class InstallPackage:
     package_name: str
 
+
 PackageManager = PythonPackageManager
 
 
@@ -42,10 +42,10 @@ PackageManager = PythonPackageManager
 class UsePackageManager:
     package_manager: PackageManager
 
-
 @dataclass()
 class CopySample:
     source: str
     destination: AbstractPath
+
 
 Command = DummyCommand | CreateDirectory | ExecuteShell | InstallPackage | UsePackageManager | CopySample

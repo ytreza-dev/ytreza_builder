@@ -9,7 +9,8 @@ class WithStreamLit:
         self._action_plan = action_plan
 
     def with_streamlit(self) -> Self:
-        self._action_plan = self._action_plan.prepare(command.InstallPackage(package_name="streamlit"),
-                                                      command.CopySample(source="python/streamlit",
-                                                                         destination=command.ProjectPath()))
+        self._action_plan = self._action_plan.prepare(
+            command.InstallPackage(package_name="streamlit"),
+            command.CopySample(source="python/streamlit", destination=command.ProjectPath()),
+            command.CopySample(source="documentation/streamlit", destination=command.ProjectPath()))
         return self

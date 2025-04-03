@@ -6,7 +6,7 @@ from ytreza_builder.action_plan import ActionPlan
 from ytreza_builder.python_project_builder import PythonSampleChoice
 
 
-class TestMypySample(BaseTestAnyStep):
+class TestStreamlit(BaseTestAnyStep):
     def from_step(self, action_plan: ActionPlan, configuration: dict[str, Any]):
         return PythonSampleChoice(action_plan=action_plan, configuration=configuration)
 
@@ -16,5 +16,6 @@ class TestMypySample(BaseTestAnyStep):
     def expected_command(self):
         return [
             cmd.InstallPackage(package_name="streamlit"),
-            cmd.CopySample(source="python/streamlit", destination=cmd.ProjectPath())
+            cmd.CopySample(source="python/streamlit", destination=cmd.ProjectPath()),
+            cmd.CopySample(source="documentation/streamlit", destination=cmd.ProjectPath())
         ]
