@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+from string import Template
 
 from ytreza_builder import command as cmd
 
@@ -25,16 +26,28 @@ class FileReaderPort(ABC):
     def is_file(self, path: str) -> bool:
         pass
 
+    @abstractmethod
+    def read_file(self, path: str) -> str:
+        pass
+
 
 class FileCopierPort(ABC):
     @abstractmethod
     def copy(self, src: str, dst: str) -> None:
         pass
 
+    @abstractmethod
+    def write(self, dst: str, content: str):
+        pass
+
 
 class ConfigurationReaderPort(ABC):
     @abstractmethod
     def get(self, key) -> str:
+        pass
+
+    @abstractmethod
+    def to_dict(self) -> dict[str, str]:
         pass
 
 
@@ -49,13 +62,24 @@ class SampleCopier:
         self._copy_directory(src, dst)
 
     def _copy_directory(self, src: str, dst: str):
-        directory = self._file_reader.read(src)
+        src_directory = self._file_reader.read(src)
 
-        for filename in directory.filenames:
-            self._file_copier.copy(src=f"{src}/{filename}", dst=self._choose_destination(dst, filename))
+        for filename in src_directory.filenames:
+            self._copy_file(src, filename, dst)
 
-        for directory in directory.directories:
+        for directory in src_directory.directories:
             self._copy_directory(src=f"{src}/{directory}", dst=(self._choose_directory(dst, directory)))
+
+    def _copy_file(self, src: str, filename: str, dst: str):
+        dst_file = self._choose_destination(dst, filename)
+        if filename.endswith(".template"):
+            self._file_copier.write(dst=dst_file,
+                                    content=self._template_to_content(src, filename))
+        else:
+            self._file_copier.copy(src=f"{src}/{filename}", dst=dst_file)
+
+    def _template_to_content(self, src: str, filename: str):
+        return Template(self._file_reader.read_file(f"{src}/{filename}")).substitute(self._configuration_reader.to_dict())
 
     def _choose_directory(self, dst: str, directory: str) -> str:
         if directory.startswith("((") and directory.endswith("))"):
@@ -76,13 +100,18 @@ class SampleCopier:
     @staticmethod
     def name_when_exist(filename: str) -> str:
         filename_parts = filename.split(".")
-        if filename_parts[-1] == "sample":
-            return ".".join(filename_parts[0: -2]) + "_" + filename_parts[-1] + "." + filename_parts[-2]
+        if filename_parts[-1] in ("sample", "template"):
+            return ".".join(filename_parts[0: -2]) + "_sample" + "." + filename_parts[-2]
         return filename
 
     @staticmethod
     def _name_without_sample(filename: str) -> str:
         filename_parts = filename.split(".")
-        if filename_parts[-1] == "sample":
+        if len(filename_parts) == 1:
+            return filename
+        if filename_parts[-1] in ("sample", "template"):
+            if len(filename_parts) == 2:
+                return filename_parts[0]
             return ".".join(filename_parts[0: -2]) + "." + filename_parts[-2]
+
         return filename

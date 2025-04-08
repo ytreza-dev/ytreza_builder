@@ -3,6 +3,7 @@ import shutil
 import subprocess
 from abc import ABC, abstractmethod
 from pathlib import Path
+from types import NotImplementedType
 from typing import assert_never, Any, Dict
 
 import ytreza_builder.command as cmd
@@ -44,9 +45,17 @@ class FileReader(FileReaderPort):
         (root_path, directories, filenames) = next(os.walk(src))
         return Directory(path=root_path, directories=directories, filenames=filenames)
 
+    def read_file(self, path: str) -> str:
+        return Path(path).read_text()
+
 
 
 class FileCopier(FileCopierPort):
+    def write(self, dst: str, content: str):
+        print(dst)
+        os.makedirs(os.path.dirname(dst), exist_ok=True)
+        Path(dst).write_text(content)
+
     def copy(self, src: str, dst: str) -> None:
         os.makedirs(os.path.dirname(dst), exist_ok=True)
         shutil.copy(src, dst)
@@ -58,6 +67,9 @@ class ConfigurationReader(ConfigurationReaderPort):
 
     def get(self, key) -> str:
         return self._configuration[key]
+
+    def to_dict(self) -> dict[str, str]:
+        return self._configuration
 
 
 class CommandHandler(CommandHandlerPort):

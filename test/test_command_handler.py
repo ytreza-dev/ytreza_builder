@@ -57,3 +57,11 @@ def test_copy_sample():
         handler = CommandHandler()
         handler.execute_all(configuration={"project_name": "project", "project_folder": temp_dir}, action_plan=ActionPlan(commands=(cmd.CopySample(source="python/streamlit", destination=ProjectPath()), )))
         assert (Path(temp_dir) / "project" / "src" / "project" / "main.py").is_file()
+
+
+def test_write_template():
+    with tempfile.TemporaryDirectory() as temp_dir:
+        handler = CommandHandler()
+        handler.execute_all(configuration={"project_name": "project", "project_folder": temp_dir}, action_plan=ActionPlan(commands=(cmd.CopySample(source="python/scalingo_streamlit", destination=ProjectPath()), )))
+        assert (Path(temp_dir) / "project" / "Procfile").read_text() == "web: streamlit run ./src/project/main.py --server.port $PORT"
+
