@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from ytreza_builder.python_package_manager import PythonPackageManager
+from ytreza_builder.python.package_manager.type import PythonPackageManager
 
 
 @dataclass(frozen=True)

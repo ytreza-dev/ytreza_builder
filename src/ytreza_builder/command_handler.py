@@ -3,17 +3,16 @@ import shutil
 import subprocess
 from abc import ABC, abstractmethod
 from pathlib import Path
-from types import NotImplementedType
 from typing import assert_never, Any, Dict
 
 import ytreza_builder.command as cmd
-import ytreza_builder.python_package_manager as pm
+import ytreza_builder.python.package_manager.type
 from ytreza_builder import SAMPLE_DIR
 from ytreza_builder.action_plan import ActionPlan
 from ytreza_builder.command import ProjectPath
+from ytreza_builder.command_handler_port import CommandHandlerPort
 from ytreza_builder.copy_sample_command_handler import SampleCopier, FileReaderPort, Directory, FileCopierPort, \
     ConfigurationReaderPort
-from ytreza_builder.command_handler_port import CommandHandlerPort
 
 
 class PackageManagerStrategy(ABC):
@@ -133,10 +132,10 @@ class CommandHandler(CommandHandlerPort):
 
     def _select_package_manager(self, package_manager: cmd.PackageManager):
         match package_manager:
-            case pm.Poetry():
+            case ytreza_builder.python.package_manager.type.Poetry():
                 self._package_manager_strategy = PoetryPackageManager()
 
-            case pm.Pipenv():
+            case ytreza_builder.python.package_manager.type.Pipenv():
                 self._package_manager_strategy = PipenvPackageManager()
 
             case _:

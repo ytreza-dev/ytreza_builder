@@ -5,10 +5,10 @@ from unittest.mock import patch
 import pytest
 
 import ytreza_builder.command as cmd
-import ytreza_builder.python_package_manager as pm
+import ytreza_builder.python.package_manager.type
 from ytreza_builder.action_plan import ActionPlan
 from ytreza_builder.command import ProjectPath, ProjectParentPath
-from ytreza_builder.command_handler  import CommandHandler
+from ytreza_builder.command_handler import CommandHandler
 
 
 def test_create_directory_from_project_path():
@@ -38,8 +38,8 @@ def test_execute_shell():
         mock.assert_called_once_with(["echo", "'hello", "project'"], cwd="directory/project")
 
 @pytest.mark.parametrize("package_manager, expected", [
-    [pm.Poetry(), "poetry add pytest"],
-    [pm.Pipenv(), "pipenv install pytest"],
+    [ytreza_builder.python.package_manager.type.Poetry(), "poetry add pytest"],
+    [ytreza_builder.python.package_manager.type.Pipenv(), "pipenv install pytest"],
 ])
 def test_install_python_package(package_manager, expected: str):
     with patch("subprocess.run") as mock:

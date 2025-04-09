@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import Self
 
 from ytreza_builder.command import Command
 

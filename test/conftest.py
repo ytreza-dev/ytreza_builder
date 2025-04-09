@@ -1,4 +1,3 @@
-from dataclasses import dataclass, field
 from typing import Any
 
 import pytest
@@ -6,31 +5,7 @@ import pytest
 from ytreza_builder.action_plan import ActionPlan
 from ytreza_builder.command import Command, CreateDirectory, ProjectPath
 from ytreza_builder.command_handler_port import CommandHandlerPort
-from ytreza_builder.python_project_builder import SystemFilePort, PythonProject
-
-
-@dataclass(frozen=True)
-class History:
-    action: str
-    param: dict = field(default_factory=dict)
-
-    def __eq__(self, other):
-        return self.action == other.action and self.param == other.param
-
-
-class SystemFileForTest(SystemFilePort):
-    def __init__(self):
-        self._history = []
-
-    def history(self) -> list[History]:
-        return self._history
-
-    def create_directory(self, path: str):
-        self._history.append(History(action="create_directory", param={"path": path}))
-
-    def execute(self, command_line: str, working_directory: str) -> None:
-        self._history.append(
-            History(action="execute", param={"command_line": command_line, "working_directory": working_directory}))
+from test.system_file_for_test import SystemFileForTest
 
 
 class CommandHandlerForTest(CommandHandlerPort):
@@ -53,11 +28,6 @@ class CommandHandlerForTest(CommandHandlerPort):
 @pytest.fixture
 def system_file() -> SystemFileForTest:
     return SystemFileForTest()
-
-
-@pytest.fixture
-def python_project(system_file: SystemFileForTest) -> PythonProject:
-    return PythonProject()
 
 
 @pytest.fixture()

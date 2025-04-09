@@ -3,7 +3,7 @@ from typing import Any
 
 from test.base_test_any_step import BaseTestAnyStep
 from ytreza_builder.action_plan import ActionPlan
-from ytreza_builder.python_project_builder import PythonPackageManagerChoice
+from ytreza_builder.python.python_project_builder import PythonPackageManagerChoice
 
 
 class BaseTestPackageManagerChoice(BaseTestAnyStep, ABC):
