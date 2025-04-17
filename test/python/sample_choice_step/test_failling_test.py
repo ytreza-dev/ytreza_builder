@@ -7,11 +7,11 @@ from ytreza_builder.python.python_project_builder import PythonTestManagerChoice
 
 
 class TestFailingTestSample(BaseTestAnyStep):
-    def from_step(self, action_plan: ActionPlan, configuration: dict[str, Any]):
+    def from_step(self, action_plan: ActionPlan, configuration: dict[str, Any]) -> PythonSampleChoice:
         return PythonSampleChoice(action_plan=action_plan, configuration=configuration)
 
-    def action(self, step: PythonSampleChoice):
+    def action(self, step: PythonSampleChoice) -> PythonSampleChoice:
         return step.with_failing_test()
 
-    def expected_command(self):
+    def expected_command(self) -> list[cmd.Command]:
         return [cmd.CopySample(source="python/failing_test", destination=cmd.ProjectPath())]

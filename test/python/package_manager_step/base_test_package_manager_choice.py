@@ -7,5 +7,5 @@ from ytreza_builder.python.python_project_builder import PythonPackageManagerCho
 
 
 class BaseTestPackageManagerChoice(BaseTestAnyStep, ABC):
-    def from_step(self, action_plan: ActionPlan, configuration: dict[str, Any]):
+    def from_step(self, action_plan: ActionPlan, configuration: dict[str, Any]) -> PythonPackageManagerChoice:
         return PythonPackageManagerChoice(action_plan=action_plan, configuration=configuration)

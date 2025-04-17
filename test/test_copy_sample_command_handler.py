@@ -25,13 +25,13 @@ class FileReaderForTest(FileReaderPort):
     def is_file(self, path: str) -> bool:
         return path in self._existing_files
 
-    def feed(self, directory: Directory):
+    def feed(self, directory: Directory) -> None:
         self._directories[directory.path] = directory
 
-    def feed_content(self, path: str, content: str):
+    def feed_content(self, path: str, content: str) -> None:
         self._contents[path] = content
 
-    def feed_exist(self, path: str):
+    def feed_exist(self, path: str) -> None:
         self._existing_files.append(path)
 
 
@@ -50,7 +50,7 @@ History = Copy | Write
 
 
 class FileCopierForTest(FileCopierPort):
-    def __init__(self):
+    def __init__(self) -> None:
         self._history = []
 
     def history(self) -> list[History]:
@@ -80,10 +80,10 @@ class ConfigurationReaderForTest(ConfigurationReaderPort):
     def get(self, key) -> str:
         return self._configuration[key]
 
-    def feed(self, key: str, value: str):
+    def feed(self, key: str, value: str) -> None:
         self._configuration[key] = value
 
-    def feed_bis(self, **configuration):
+    def feed_bis(self, **configuration: str) -> None:
         self._configuration = configuration
 
     def to_dict(self) -> dict[str, str]:
@@ -97,11 +97,12 @@ def configuration_reader() -> ConfigurationReaderForTest:
 
 
 @pytest.fixture
-def sample_copier(file_reader: FileReaderForTest, file_copier: FileCopierForTest, configuration_reader: ConfigurationReaderForTest):
+def sample_copier(file_reader: FileReaderForTest, file_copier: FileCopierForTest,
+                  configuration_reader: ConfigurationReaderForTest) -> SampleCopier:
     return SampleCopier(file_copier=file_copier, file_reader=file_reader, configuration_reader=configuration_reader)
 
 
-def test_when_nothing(file_copier: FileCopierForTest):
+def test_when_nothing(file_copier: FileCopierForTest) -> None:
     assert file_copier.history() == []
 
 
@@ -112,19 +113,22 @@ def test_when_nothing(file_copier: FileCopierForTest):
     ["template", Copy(src="src/template", dst="dst/template")],
     ["file.template.txt", Copy(src="src/file.template.txt", dst="dst/file.template.txt")],
 ])
-def test_copy_one_file(filename: str, expected: History, sample_copier: SampleCopier, file_reader: FileReaderForTest, file_copier: FileCopierForTest):
+def test_copy_one_file(filename: str, expected: History, sample_copier: SampleCopier, file_reader: FileReaderForTest,
+                       file_copier: FileCopierForTest) -> None:
     file_reader.feed(directory=Directory(path="src", directories=[], filenames=[filename]))
     sample_copier.execute(src="src", dst="dst")
     assert file_copier.history() == [expected]
 
 
-def test_copy_another_file(sample_copier: SampleCopier, file_reader: FileReaderForTest, file_copier: FileCopierForTest):
+def test_copy_another_file(sample_copier: SampleCopier, file_reader: FileReaderForTest,
+                           file_copier: FileCopierForTest) -> None:
     file_reader.feed(directory=Directory(path="src", directories=[], filenames=["file_2"]))
     sample_copier.execute(src="src", dst="dst")
     assert file_copier.history() == [Copy(src="src/file_2", dst="dst/file_2")]
 
 
-def test_copy_many_files(sample_copier: SampleCopier, file_reader: FileReaderForTest, file_copier: FileCopierForTest):
+def test_copy_many_files(sample_copier: SampleCopier, file_reader: FileReaderForTest,
+                         file_copier: FileCopierForTest) -> None:
     file_reader.feed(directory=Directory(path="src", directories=[], filenames=["file_1", "file_2"]))
     sample_copier.execute(src="src", dst="dst")
     assert file_copier.history() == [
@@ -132,7 +136,8 @@ def test_copy_many_files(sample_copier: SampleCopier, file_reader: FileReaderFor
         Copy(src="src/file_2", dst="dst/file_2")]
 
 
-def test_copy_directory(sample_copier: SampleCopier, file_reader: FileReaderForTest, file_copier: FileCopierForTest):
+def test_copy_directory(sample_copier: SampleCopier, file_reader: FileReaderForTest,
+                        file_copier: FileCopierForTest) -> None:
     file_reader.feed(directory=Directory(path="src", directories=["dir_1", "dir_2"], filenames=["file_1", "file_2"]))
     file_reader.feed(directory=Directory(path="src/dir_1", directories=[], filenames=["file_3"]))
     file_reader.feed(directory=Directory(path="src/dir_2", directories=["dir_3"], filenames=["file_4"]))
@@ -155,7 +160,7 @@ def test_copy_directory(sample_copier: SampleCopier, file_reader: FileReaderForT
     ["f.i.l.e.4.py.sample", "dst/f.i.l.e.4.py", Copy(src="src/f.i.l.e.4.py.sample", dst="dst/f.i.l.e.4_sample.py")],
 ])
 def test_rename_sample_when_file_exist(filename: str, expected: Copy, existing: str, sample_copier: SampleCopier, file_reader: FileReaderForTest,
-                       file_copier: FileCopierForTest):
+                                       file_copier: FileCopierForTest) -> None:
     file_reader.feed(directory=Directory(path="src", directories=[], filenames=[filename]))
     file_reader.feed_exist(path=existing)
     sample_copier.execute(src="src", dst="dst")
@@ -165,7 +170,9 @@ def test_rename_sample_when_file_exist(filename: str, expected: Copy, existing: 
     ["file.py.sample", Copy(src="src/file.py.sample", dst="dst/file.py")],
     ["file.sample", Copy(src="src/file.sample", dst="dst/file")],
 ])
-def test_remove_sample_extension_when_file_does_not_exist(filename:str, expected: History, sample_copier: SampleCopier, file_reader: FileReaderForTest, file_copier: FileCopierForTest):
+def test_remove_sample_extension_when_file_does_not_exist(filename: str, expected: History, sample_copier: SampleCopier,
+                                                          file_reader: FileReaderForTest,
+                                                          file_copier: FileCopierForTest) -> None:
     file_reader.feed(directory=Directory(path="src", directories=[], filenames=[filename]))
     sample_copier.execute(src="src", dst="dst")
     assert file_copier.history() == [expected]
@@ -175,7 +182,9 @@ def test_remove_sample_extension_when_file_does_not_exist(filename:str, expected
     ["key", "value", Copy(src="src/((key))/file", dst="dst/value/file")],
     ["otherKey", "otherValue", Copy(src="src/((otherKey))/file", dst="dst/otherValue/file")],
 ])
-def test_read_configuration_for_directories(key: str, value: str, expected: Copy, sample_copier: SampleCopier, file_reader: FileReaderForTest, file_copier: FileCopierForTest, configuration_reader: ConfigurationReaderForTest):
+def test_read_configuration_for_directories(key: str, value: str, expected: Copy, sample_copier: SampleCopier,
+                                            file_reader: FileReaderForTest, file_copier: FileCopierForTest,
+                                            configuration_reader: ConfigurationReaderForTest) -> None:
     file_reader.feed(directory=Directory(path="src", directories=[f"(({key}))"], filenames=[]))
     file_reader.feed(directory=Directory(path=f"src/(({key}))", directories=[], filenames=["file"]))
     configuration_reader.feed(key=key, value=value)
@@ -189,7 +198,9 @@ def test_read_configuration_for_directories(key: str, value: str, expected: Copy
     ["${project_name}", "myProject", {"project_name": "myProject"}],
     ["${project_name}", "other project", {"project_name": "other project"}],
 ])
-def test_fill_template(template: str, expected_content: str, configuration: dict[str, str], sample_copier: SampleCopier, file_reader: FileReaderForTest, file_copier: FileCopierForTest, configuration_reader: ConfigurationReaderForTest):
+def test_fill_template(template: str, expected_content: str, configuration: dict[str, str], sample_copier: SampleCopier,
+                       file_reader: FileReaderForTest, file_copier: FileCopierForTest,
+                       configuration_reader: ConfigurationReaderForTest) -> None:
     file_reader.feed(directory=Directory(path="src", directories=[], filenames=["file.py.template"]))
     file_reader.feed_content(path="src/file.py.template", content=template)
     configuration_reader.feed_bis(**configuration)
@@ -205,7 +216,7 @@ def test_fill_template(template: str, expected_content: str, configuration: dict
     ["f.i.l.e.4.py.template", "dst/f.i.l.e.4.py", Write(dst="dst/f.i.l.e.4_sample.py", content="some content")],
 ])
 def test_rename_template_when_file_exist(filename: str, expected: Copy, existing: str, sample_copier: SampleCopier, file_reader: FileReaderForTest,
-                       file_copier: FileCopierForTest):
+                                         file_copier: FileCopierForTest) -> None:
     file_reader.feed(directory=Directory(path="src", directories=[], filenames=[filename]))
     file_reader.feed_exist(path=existing)
     file_reader.feed_content(f"src/{filename}", "some content")

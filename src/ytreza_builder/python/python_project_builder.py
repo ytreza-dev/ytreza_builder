@@ -26,11 +26,6 @@ class IsExecutable:
         command_handler.execute_all(self._configuration, self._action_plan)
 
 
-class PythonTestManagerChoice(IsExecutable, PytestBuiltIn):
-    def then_add_samples(self):
-        return PythonSampleChoice(self._action_plan, self._configuration)
-
-
 class PythonDeployChoice(IsExecutable, StreamlitWithScalingo):
     pass
 
@@ -38,6 +33,11 @@ class PythonDeployChoice(IsExecutable, StreamlitWithScalingo):
 class PythonSampleChoice(IsExecutable, WithFailingTest, WithGitIgnore, WithMypy, WithStreamLit):
     def then_deploy(self) -> PythonDeployChoice:
         return PythonDeployChoice(self._action_plan, self._configuration)
+
+
+class PythonTestManagerChoice(IsExecutable, PytestBuiltIn):
+    def then_add_samples(self) -> PythonSampleChoice:
+        return PythonSampleChoice(self._action_plan, self._configuration)
 
 
 

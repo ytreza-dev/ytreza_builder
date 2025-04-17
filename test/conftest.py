@@ -19,7 +19,7 @@ class CommandHandlerForTest(CommandHandlerPort):
     def configuration(self) -> dict[str, Any]:
         return self._configuration
 
-    def execute_all(self, configuration: dict[str, Any], action_plan: ActionPlan):
+    def execute_all(self, configuration: dict[str, Any], action_plan: ActionPlan) -> None:
         self._configuration = configuration
         self._history.extend(action_plan.commands)
 

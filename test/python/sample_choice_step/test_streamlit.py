@@ -7,13 +7,13 @@ from ytreza_builder.python.python_project_builder import PythonSampleChoice
 
 
 class TestStreamlit(BaseTestAnyStep):
-    def from_step(self, action_plan: ActionPlan, configuration: dict[str, Any]):
+    def from_step(self, action_plan: ActionPlan, configuration: dict[str, Any]) -> PythonSampleChoice:
         return PythonSampleChoice(action_plan=action_plan, configuration=configuration)
 
-    def action(self, step: PythonSampleChoice):
+    def action(self, step: PythonSampleChoice) -> PythonSampleChoice:
         return step.with_streamlit()
 
-    def expected_command(self):
+    def expected_command(self) -> list[cmd.Command]:
         return [
             cmd.InstallPackage(package_name="streamlit"),
             cmd.CopySample(source="python/streamlit", destination=cmd.ProjectPath()),

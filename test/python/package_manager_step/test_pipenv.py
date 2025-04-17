@@ -5,10 +5,10 @@ from ytreza_builder.python.python_project_builder import PythonPackageManagerCho
 
 
 class TestProjectWithPipenv(BaseTestPackageManagerChoice):
-    def action(self, step : PythonPackageManagerChoice):
+    def action(self, step : PythonPackageManagerChoice) -> PythonPackageManagerChoice:
         return step.with_pipenv()
 
-    def expected_command(self):
+    def expected_command(self) -> list[cmd.Command]:
         return [
             cmd.CreateDirectory(cmd.ProjectPath()),
             cmd.ExecuteShell(command_line="python -m pip install --user pipenv", working_directory=cmd.ProjectPath()),

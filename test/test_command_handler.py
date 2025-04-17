@@ -5,13 +5,13 @@ from unittest.mock import patch
 import pytest
 
 import ytreza_builder.command as cmd
-import ytreza_builder.python.package_manager.type
 from ytreza_builder.action_plan import ActionPlan
 from ytreza_builder.command import ProjectPath, ProjectParentPath
 from ytreza_builder.command_handler import CommandHandler
+from ytreza_builder.python.package_manager import type
 
 
-def test_create_directory_from_project_path():
+def test_create_directory_from_project_path() -> None:
     with tempfile.TemporaryDirectory() as temp_dir:
         handler = CommandHandler()
         configuration = {"project_name": "toto", "project_folder": temp_dir}
@@ -20,7 +20,8 @@ def test_create_directory_from_project_path():
         path = Path(temp_dir) / "toto"
         assert path.is_dir()
 
-def test_create_directory_from_project_parent_path():
+
+def test_create_directory_from_project_parent_path() -> None:
     with tempfile.TemporaryDirectory() as temp_dir:
         handler = CommandHandler()
         configuration = {"project_name": "toto", "project_folder": temp_dir + "/folder"}
@@ -30,7 +31,7 @@ def test_create_directory_from_project_parent_path():
         assert path.is_dir()
 
 
-def test_execute_shell():
+def test_execute_shell() -> None:
     with patch("subprocess.run") as mock:
         handler = CommandHandler()
         handler.execute_all(configuration={"project_name": "project", "project_folder": "directory"}, action_plan=ActionPlan(
@@ -38,10 +39,10 @@ def test_execute_shell():
         mock.assert_called_once_with(["echo", "'hello", "project'"], cwd="directory/project")
 
 @pytest.mark.parametrize("package_manager, expected", [
-    [ytreza_builder.python.package_manager.type.Poetry(), "poetry add pytest"],
-    [ytreza_builder.python.package_manager.type.Pipenv(), "pipenv install pytest"],
+    [type.Poetry(), "poetry add pytest"],
+    [type.Pipenv(), "pipenv install pytest"],
 ])
-def test_install_python_package(package_manager, expected: str):
+def test_install_python_package(package_manager: type.PythonPackageManager, expected: str) -> None:
     with patch("subprocess.run") as mock:
         handler = CommandHandler()
         handler.execute_all(configuration={"project_name": "project", "project_folder": "directory"}, action_plan=ActionPlan(
@@ -52,14 +53,14 @@ def test_install_python_package(package_manager, expected: str):
         mock.assert_called_once_with(expected.split(" "), cwd="directory/project")
 
 
-def test_copy_sample():
+def test_copy_sample() -> None:
     with tempfile.TemporaryDirectory() as temp_dir:
         handler = CommandHandler()
         handler.execute_all(configuration={"project_name": "project", "project_folder": temp_dir}, action_plan=ActionPlan(commands=(cmd.CopySample(source="python/streamlit", destination=ProjectPath()), )))
         assert (Path(temp_dir) / "project" / "src" / "project" / "main.py").is_file()
 
 
-def test_write_template():
+def test_write_template() -> None:
     with tempfile.TemporaryDirectory() as temp_dir:
         handler = CommandHandler()
         handler.execute_all(configuration={"project_name": "project", "project_folder": temp_dir}, action_plan=ActionPlan(commands=(cmd.CopySample(source="python/scalingo_streamlit", destination=ProjectPath()), )))

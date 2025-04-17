@@ -5,10 +5,10 @@ from ytreza_builder.python.python_project_builder import PythonPackageManagerCho
 
 
 class TestProjectWithPoetry(BaseTestPackageManagerChoice):
-    def action(self, step: PythonPackageManagerChoice):
+    def action(self, step: PythonPackageManagerChoice) -> PythonPackageManagerChoice:
         return step.with_poetry()
 
-    def expected_command(self):
+    def expected_command(self) -> list[cmd.Command]:
         return [
             cmd.ExecuteShell(command_line="python -m pip install --user poetry", working_directory=cmd.ProjectParentPath()),
             cmd.ExecuteShell(command_line="poetry new {project_name}", working_directory=cmd.ProjectParentPath()),
