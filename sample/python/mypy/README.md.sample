@@ -1,0 +1,5 @@
+To run mypy :
+
+```
+mypy .
+```
